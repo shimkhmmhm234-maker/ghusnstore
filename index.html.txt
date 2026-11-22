@@ -1,0 +1,2743 @@
+GHOSN STOREFRONT — REVISED SOURCE EXPORT
+This file is a concatenated multi-file Next.js project export, not a standalone HTML page.
+Apply each section to the matching path shown by the FILE markers.
+
+
+{
+  "name": "ghosn-storefront",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.6.3"
+  }
+}
+
+
+===== FILE: tsconfig.json =====
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
+
+
+===== FILE: postcss.config.mjs =====
+/** @type {import('postcss-load-config').Config} */
+const config = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+};
+
+export default config;
+
+
+===== FILE: tailwind.config.ts =====
+import type { Config } from 'tailwindcss';
+
+const config: Config = {
+  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
+  theme: {
+    extend: {
+      colors: {
+        olive: '#596447',
+        cream: '#F7F3E9',
+        sage: '#A5AA8D',
+        gold: '#C6A45B',
+        deep: '#292F26',
+        paper: '#FBF9F4',
+      },
+      fontFamily: {
+        serifEn: ['var(--font-cormorant)', 'Georgia', 'serif'],
+        sansEn: ['var(--font-jakarta)', 'system-ui', 'sans-serif'],
+        serifAr: ['var(--font-amiri)', 'Georgia', 'serif'],
+        sansAr: ['var(--font-ibm-arabic)', 'system-ui', 'sans-serif'],
+      },
+    },
+  },
+  plugins: [],
+};
+
+export default config;
+
+
+===== FILE: src/app/globals.css =====
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background-color: #F7F3E9;
+    color: #292F26;
+    scroll-behavior: smooth;
+  }
+
+  html[dir='ltr'] body {
+    font-family: var(--font-jakarta), system-ui, sans-serif;
+  }
+
+  html[dir='rtl'] body {
+    font-family: var(--font-ibm-arabic), system-ui, sans-serif;
+  }
+}
+
+.font-editorial {
+  font-family: var(--font-cormorant), Georgia, serif;
+}
+
+html[dir='rtl'] .font-editorial {
+  font-family: var(--font-amiri), Georgia, serif;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal-view {
+  animation: fadeSlide 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Consistent keyboard focus, including controls that use the editorial palette. */
+:where(a, button, input, textarea, select):focus-visible {
+  outline: 2px solid #596447;
+  outline-offset: 3px;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+===== FILE: src/app/layout.tsx =====
+import type { Metadata } from 'next';
+import {
+  Cormorant_Garamond,
+  Plus_Jakarta_Sans,
+  Amiri,
+  IBM_Plex_Sans_Arabic,
+} from 'next/font/google';
+import './globals.css';
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-cormorant',
+});
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-jakarta',
+});
+
+const amiri = Amiri({
+  subsets: ['arabic'],
+  weight: ['400', '700'],
+  variable: '--font-amiri',
+});
+
+const ibmArabic = IBM_Plex_Sans_Arabic({
+  subsets: ['arabic'],
+  weight: ['400', '500', '600'],
+  variable: '--font-ibm-arabic',
+});
+
+export const metadata: Metadata = {
+  title: 'GHOSN | غُصن — Mediterranean Olive Oil',
+  description: 'Rooted in Nature. Made for the Table. Sinai Extra Virgin Olive Oil.',
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html
+      lang="ar"
+      dir="rtl"
+      className={`${cormorant.variable} ${jakarta.variable} ${amiri.variable} ${ibmArabic.variable}`}
+    >
+      <body className="antialiased selection:bg-olive selection:text-cream">
+        {children}
+      </body>
+    </html>
+  );
+}
+
+
+===== FILE: src/types/ghosn.ts =====
+export type Locale = 'en' | 'ar';
+
+export type RouteView =
+  | 'home'
+  | 'shop'
+  | 'product'
+  | 'table'
+  | 'story'
+  | 'guide'
+  | 'gifts'
+  | 'checkout';
+
+export interface BiText {
+  en: string;
+  ar: string;
+}
+
+export interface ProductSize {
+  id: string;
+  label: BiText;
+  priceEGP: number;
+  inStock: boolean;
+}
+
+export interface Product {
+  id: string;
+  sku: string;
+  category: 'olive-oil' | 'gift';
+  featured?: boolean;
+  name: BiText;
+  shortDesc: BiText;
+  fullDesc: BiText;
+  originDetails: BiText;
+  tasteProfile: BiText | null;
+  storageInfo: BiText;
+  images: string[];
+  sizes: ProductSize[];
+  bundleContents?: BiText[];
+}
+
+export interface CartLine {
+  productId: string;
+  sizeId: string;
+  quantity: number;
+}
+
+export interface Recipe {
+  id: string;
+  category: 'breakfast' | 'brunch' | 'salads' | 'dips' | 'everyday';
+  title: BiText;
+  prepTime: BiText;
+  intro: BiText;
+  image: string;
+  ingredients: BiText[];
+  steps: BiText[];
+}
+
+export interface OrderDraft {
+  fullName: string;
+  email: string;
+  phone: string;
+  city: string;
+  address: string;
+  notes: string;
+  lines: { sku: string; sizeId: string; quantity: number; unitPrice: number }[];
+  subtotal: number;
+  locale: Locale;
+}
+
+
+===== FILE: src/data/catalog.ts =====
+import { Product } from '@/types/ghosn';
+
+export const PRODUCTS: Product[] = [
+  {
+    id: 'sinai-tin',
+    sku: 'GH-TIN-1000',
+    category: 'olive-oil',
+    featured: true,
+    name: {
+      en: 'GHOSN Sinai Extra Virgin Olive Oil — Brushed Tin',
+      ar: 'زيت زيتون غُصن السيناوي البكر الممتاز — عبوة معدنية',
+    },
+    shortDesc: {
+      en: 'Light-blocking cylindrical tin • Acidity < 0.8%',
+      ar: 'عبوة معدنية تحجب الضوء • حموضة أقل من ٠.٨٪',
+    },
+    fullDesc: {
+      en: 'Extra virgin olive oil bottled in brushed steel to shield the oil from UV light and preserve freshness for everyday cooking, dipping, and table finishing. Shelf life is 2 years from the production date printed on the vessel.',
+      ar: 'زيت زيتون بكر ممتاز معبأ في عبوة معدنية محكمة تحمي الزيت من الضوء للحفاظ على نقائه وجودته في الطهي اليومي والتقديم. الصلاحية عامان من تاريخ الإنتاج المدون على العبوة.',
+    },
+    originDetails: {
+      en: 'Label origin: Bir al-Abd, North Sinai, Egypt. Harvest batch and pressing details will be published when verified for each batch.',
+      ar: 'البيان المدون على العبوة: بئر العبد - شمال سيناء، مصر. سيُنشر موسم القطف وتفاصيل العصر بعد توثيقهما لكل تشغيلة.',
+    },
+    tasteProfile: null,
+    storageInfo: {
+      en: 'Store upright in a cool, dark cupboard away from stove heat and direct sunlight. Reseal tightly after each pour.',
+      ar: 'يُحفظ في مكان بارد ومظلم بعيداً عن حرارة الموقد وأشعة الشمس المباشرة، مع إحكام الغلق بعد كل استخدام.',
+    },
+    images: [
+      '/images/ghosn-tin-1000ml.png',
+      'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=1000&q=80',
+    ],
+    sizes: [
+      { id: '1000ml', label: { en: '1000 ml Tin', ar: 'عبوة ١٠٠٠ مل' }, priceEGP: 650, inStock: true },
+      { id: '2000ml', label: { en: '2 × 1000 ml Pantry Pair', ar: 'عبوتان × ١٠٠٠ مل' }, priceEGP: 1240, inStock: true },
+    ],
+  },
+  {
+    id: 'sinai-glass',
+    sku: 'GH-GLS-500',
+    category: 'olive-oil',
+    featured: true,
+    name: {
+      en: 'GHOSN Sinai Extra Virgin Olive Oil — Dark Glass',
+      ar: 'زيت زيتون غُصن السيناوي البكر الممتاز — زجاجة داكنة',
+    },
+    shortDesc: {
+      en: 'Dark green UV-protective glass • For cooking & salads',
+      ar: 'زجاج أخضر داكن يحمي من الضوء • للطبخ والسلطات',
+    },
+    fullDesc: {
+      en: 'Presented in dark green glass with a sealed foil neck for graceful pouring at the dining table. Additive-free extra virgin olive oil with acidity under 0.8%, formulated for fresh salads and everyday Mediterranean cooking.',
+      ar: 'زجاجة خضراء داكنة بغطاء محكم مصممة للسكب الأنيق على المائدة. زيت زيتون بكر ممتاز خالٍ من الإضافات بحموضة أقل من ٠.٨٪، مثالي للسلطات والطهي اليومي.',
+    },
+    originDetails: {
+      en: 'Label origin: Sinai, Egypt. Exact batch and packaging details will be listed on the final product label once confirmed.',
+      ar: 'البيان المدون على العبوة: سيناء، مصر. ستُذكر بيانات العبوة ورقم التشغيلة على الملصق النهائي بعد تأكيدهما.',
+    },
+    tasteProfile: null,
+    storageInfo: {
+      en: 'Keep away from sunny windowsills. Ideal pantry temperature is 14°C–20°C.',
+      ar: 'يُحفظ بعيداً عن النوافذ المشمسة، ويفضل تخزينه في درجة حرارة معتدلة بين ١٤ و٢٠ درجة مئوية.',
+    },
+    images: [
+      '/images/ghosn-bottle-glass.png',
+      'https://images.unsplash.com/photo-1510626176961-4b57d4fbad03?auto=format&fit=crop&w=1000&q=80',
+    ],
+    sizes: [
+      { id: '500ml', label: { en: '500 ml', ar: '٥٠٠ مل' }, priceEGP: 390, inStock: true },
+      { id: '250ml', label: { en: '250 ml', ar: '٢٥٠ مل' }, priceEGP: 230, inStock: false },
+    ],
+  },
+  {
+    id: 'gift-daily-duo',
+    sku: 'GH-GIFT-DUO',
+    category: 'gift',
+    featured: true,
+    name: {
+      en: 'The Everyday Table Duo (Tin + Glass)',
+      ar: 'ثنائي المائدة اليومية (العبوة المعدنية + الزجاجة)',
+    },
+    shortDesc: {
+      en: 'One vessel for pantry reserve, one for the table',
+      ar: 'عبوة للتخزين في المطبخ وزجاجة للتقديم على المائدة',
+    },
+    fullDesc: {
+      en: 'A practical culinary pairing combining our 1000ml brushed steel tin for daily refills and our dark green glass bottle for effortless table service.',
+      ar: 'مجموعة عملية تجمع بين العبوة المعدنية سعة ١٠٠٠ مل للتخزين والزجاجة الداكنة للتقديم المباشر على مائدة الطعام.',
+    },
+    originDetails: {
+      en: 'Contains GHOSN Sinai Extra Virgin Olive Oil. Gift packaging details will be confirmed before launch.',
+      ar: 'يحتوي على زيت زيتون غُصن السيناوي البكر الممتاز. سيتم توضيح مواصفات صندوق الهدية قبل الإطلاق.',
+    },
+    tasteProfile: null,
+    storageInfo: {
+      en: 'Store both vessels away from direct light and heat.',
+      ar: 'تُحفظ العبوات بعيداً عن الضوء المباشر ومصادر الحرارة.',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1596560548464-f010549b84d7?auto=format&fit=crop&w=1000&q=80',
+      '/images/ghosn-tin-1000ml.png',
+    ],
+    sizes: [
+      { id: 'duo-std', label: { en: '1000 ml Tin + Table Bottle', ar: 'عبوة ١٠٠٠ مل + زجاجة المائدة' }, priceEGP: 990, inStock: true },
+    ],
+    bundleContents: [
+      { en: '1 × GHOSN 1000ml Brushed Tin', ar: '١ × عبوة غُصن المعدنية ١٠٠٠ مل' },
+      { en: '1 × GHOSN Dark Glass Bottle', ar: '١ × زجاجة غُصن الزجاجية الداكنة' },
+      { en: 'Printed care and pairing card', ar: 'بطاقة مطبوعة للعناية واقتراحات الاستخدام' },
+    ],
+  },
+  {
+    id: 'gift-host-box',
+    sku: 'GH-GIFT-HOST',
+    category: 'gift',
+    featured: false,
+    name: {
+      en: 'The Mediterranean Host Box',
+      ar: 'صندوق الضيافة المتوسطي',
+    },
+    shortDesc: {
+      en: 'Curated dinner-host gift set',
+      ar: 'مجموعة هدايا مختارة للضيافة',
+    },
+    fullDesc: {
+      en: 'Created for housewarmings, Ramadan gatherings, and shared weekend meals. Built around GHOSN Extra Virgin Olive Oil with editable slots for artisanal table companions.',
+      ar: 'صندوق مصمم لإهداء محبي المائدة الدافئة والمناسبات العائلية، يرتكز على زيت زيتون غُصن البكر الممتاز مع مرفقات مختارة قابلة للتخصيص.',
+    },
+    originDetails: {
+      en: 'Gift partners and included accessories will be confirmed before this set is offered for sale.',
+      ar: 'سيتم تأكيد شركاء الهدية والإكسسوارات المرفقة قبل إتاحة هذه المجموعة للبيع.',
+    },
+    tasteProfile: null,
+    storageInfo: {
+      en: 'Store in a cool, dry place prior to gifting.',
+      ar: 'يُحفظ في مكان بارد وجاف قبل التقديم كهدية.',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1000&q=80',
+      '/images/ghosn-bottle-glass.png',
+    ],
+    sizes: [
+      { id: 'host-box', label: { en: 'Complete Gift Box', ar: 'صندوق الهدية الكامل' }, priceEGP: 1350, inStock: true },
+    ],
+    bundleContents: [
+      { en: '1 × GHOSN Dark Glass Bottle', ar: '١ × زجاجة غُصن الداكنة' },
+      { en: '1 × GHOSN 1000ml Tin', ar: '١ × عبوة غُصن المعدنية ١٠٠٠ مل' },
+      { en: 'Stoneware dipping bowl (to be confirmed)', ar: 'وعاء تقديم خزفي (بانتظار التأكيد)' },
+    ],
+  },
+];
+
+
+===== FILE: src/data/editorial.ts =====
+import { BiText, Recipe } from '@/types/ghosn';
+
+export const RECIPES: Recipe[] = [
+  {
+    id: 'warm-bread-labneh',
+    category: 'breakfast',
+    title: {
+      en: 'Whipped Labneh, Za’atar & Warm Flatbread Pool',
+      ar: 'لبنة مخفوقة مع الزعتر وزيت الزيتون والخبز الدافئ',
+    },
+    prepTime: { en: '10 mins', ar: '١٠ دقائق' },
+    intro: {
+      en: 'A calm Mediterranean morning ritual: cool strained yogurt smoothed onto a shallow plate and crowned with generous olive oil.',
+      ar: 'طقس صباحي بسيط على المائدة المتوسطية: لبنة كريمية في صحن مسطح تغمرها قطرات سخية من زيت الزيتون البكر.',
+    },
+    image: 'https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=1000&q=80',
+    ingredients: [
+      { en: '250g thick strained labneh', ar: '٢٥٠ جم لبنة متماسكة' },
+      { en: '3 tbsp GHOSN Extra Virgin Olive Oil', ar: '٣ ملاعق كبيرة زيت زيتون غُصن بكر ممتاز' },
+      { en: '1 tbsp wild za’atar & toasted sesame', ar: 'ملعقة كبيرة زعتر بري مع سمسم محمص' },
+      { en: 'Fresh mint leaves & warm sourdough or baladi bread', ar: 'أوراق نعناع طازج وخبز دافئ' },
+    ],
+    steps: [
+      { en: 'Spread labneh over a ceramic plate using the back of a spoon to form gentle ridges.', ar: 'افرد اللبنة في صحن خزفي بظهر الملعقة لتكوين تموجات خفيفة.' },
+      { en: 'Pour GHOSN olive oil generously into the grooves until golden pools gather.', ar: 'اسكب زيت زيتون غُصن بسخاء داخل التموجات.' },
+      { en: 'Scatter za’atar and fresh mint leaves, then serve immediately with warm torn bread.', ar: 'رش الزعتر وأوراق النعناع وقدّمها فوراً مع الخبز الدافئ.' },
+    ],
+  },
+  {
+    id: 'citrus-fennel-brunch',
+    category: 'brunch',
+    title: {
+      en: 'Charred Citrus, Shaved Fennel & Soft-Boiled Eggs',
+      ar: 'مقبلات الفطور: الشمر المقرمش والحمضيات مع البيض',
+    },
+    prepTime: { en: '20 mins', ar: '٢٠ دقيقة' },
+    intro: {
+      en: 'Sunlit weekend brunch balancing crisp fennel, bright winter oranges, flaky salt, and silky olive oil.',
+      ar: 'وجبة برانش مشرقة تجمع بين قرمشة الشمر وانتعاش البرتقال ولمسة زيت الزيتون الغنية.',
+    },
+    image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=1000&q=80',
+    ingredients: [
+      { en: '1 crisp fennel bulb, thinly sliced', ar: 'ثمرة شمر طازجة مقطعة شرائح رفيعة' },
+      { en: '2 blood or navel oranges, segmented', ar: 'ثمرتا برتقال مقشرتان ومقطعتان' },
+      { en: '4 soft-boiled eggs, halved', ar: '٤ بيضات مسلوقة نصف سلق' },
+      { en: '3 tbsp GHOSN Extra Virgin Olive Oil & sea salt', ar: '٣ ملاعق كبيرة زيت زيتون غُصن وملح بحري' },
+    ],
+    steps: [
+      { en: 'Toss sliced fennel and orange segments with half the olive oil and sea salt.', ar: 'قلب شرائح الشمر والبرتقال مع نصف كمية زيت الزيتون والملح.' },
+      { en: 'Arrange on a wide platter and nestle warm halved eggs on top.', ar: 'رتب المزيج في طبق واسع وضع أنصاف البيض الدافئة فوقه.' },
+      { en: 'Finish with a final ribbon of olive oil and cracked black pepper.', ar: 'اختم برشة أخيرة من زيت الزيتون والفلفل الأسود المجروش.' },
+    ],
+  },
+  {
+    id: 'lemon-herb-dressing',
+    category: 'salads',
+    title: {
+      en: 'Everyday Sunlit Salad & Lemon-Herb Emulsion',
+      ar: 'سلطة المائدة اليومية بتتبيلة الليمون والأعشاب',
+    },
+    prepTime: { en: '12 mins', ar: '١٢ دقيقة' },
+    intro: {
+      en: 'A crisp cucumber, heirloom tomato, and parsley salad lifted by an emulsified three-to-one olive oil dressing.',
+      ar: 'سلطة خضروات طازجة بالخيار والطماطم والبقدونس مع تتبيلة متوازنة من زيت الزيتون والليمون.',
+    },
+    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1000&q=80',
+    ingredients: [
+      { en: '3 tbsp GHOSN Extra Virgin Olive Oil', ar: '٣ ملاعق كبيرة زيت زيتون غُصن بكر ممتاز' },
+      { en: '1 tbsp fresh lemon juice + pinch of dried oregano', ar: 'ملعقة كبيرة عصير ليمون طازج ورشة أوريجانو' },
+      { en: 'Ripe tomatoes, Persian cucumbers, flat-leaf parsley', ar: 'طماطم ناضجة، خيار طازج، وبقدونس مفروم' },
+    ],
+    steps: [
+      { en: 'Whisk olive oil, lemon juice, oregano, and salt in a small jar until glossy.', ar: 'اخفق زيت الزيتون وعصير الليمون والأوريجانو والملح في برطمان صغير حتى يتجانس.' },
+      { en: 'Pour over chopped vegetables just before bringing the bowl to the table.', ar: 'اسكب التتبيلة فوق الخضروات قبل التقديم مباشرة.' },
+    ],
+  },
+  {
+    id: 'roast-garlic-white-bean-dip',
+    category: 'dips',
+    title: {
+      en: 'Silky White Bean & Roasted Garlic Olive Oil Dip',
+      ar: 'غموس الفاصوليا البيضاء بالثوم المشوي وزيت الزيتون',
+    },
+    prepTime: { en: '25 mins', ar: '٢٥ دقيقة' },
+    intro: {
+      en: 'Velvety blended beans enriched with slow-roasted garlic cloves and fragrant rosemary oil.',
+      ar: 'خليط ناعم من الفاصوليا البيضاء الممزوجة بالثوم المشوي وإكليل الجبل وزيت الزيتون.',
+    },
+    image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=1000&q=80',
+    ingredients: [
+      { en: '400g cooked cannellini beans, drained', ar: '٤٠٠ جم فاصوليا بيضاء مطهوة ومصفاة' },
+      { en: '4 cloves slow-roasted garlic + 1/3 cup GHOSN Olive Oil', ar: '٤ فصوص ثوم مشوي + ثلث كوب زيت زيتون غُصن' },
+      { en: 'Lemon zest & rosemary sprig', ar: 'بشر ليمون وعود إكليل الجبل' },
+    ],
+    steps: [
+      { en: 'Blend beans, roasted garlic, lemon zest, and salt while streaming in olive oil slowly.', ar: 'اخلط الفاصوليا مع الثوم وبشر الليمون والملح مع إضافة زيت الزيتون تدريجياً.' },
+      { en: 'Spoon into a shallow bowl and swirl extra olive oil on top with crisp vegetables.', ar: 'اسكبه في صحن التقديم وزينه برشة إضافية من الزيت مع الخضروات المقرمشة.' },
+    ],
+  },
+  {
+    id: 'olive-oil-baked-fish',
+    category: 'everyday',
+    title: {
+      en: 'Slow-Poached Mediterranean Sea Bass in Olive Oil',
+      ar: 'سمك القاروص المطهو برفق في زيت الزيتون والأعشاب',
+    },
+    prepTime: { en: '30 mins', ar: '٣٠ دقيقة' },
+    intro: {
+      en: 'Gentle oven-poaching in olive oil keeps delicate fish tender, aromatic, and deeply comforting.',
+      ar: 'الطهي الهادئ في الفرن مع زيت الزيتون يمنح السمك طراوة فائقة ونكهة عطرية متوازنة.',
+    },
+    image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=1000&q=80',
+    ingredients: [
+      { en: '2 sea bass fillets + sliced fennel & lemon rounds', ar: 'شريحتا سمك قاروص + شرائح شمر وليمون' },
+      { en: '1/2 cup GHOSN Extra Virgin Olive Oil', ar: 'نصف كوب زيت زيتون غُصن بكر ممتاز' },
+      { en: 'Thyme sprigs, cherry tomatoes, sea salt', ar: 'أعواد زعتر، طماطم كرزية، وملح بحري' },
+    ],
+    steps: [
+      { en: 'Nestle fillets in a ceramic baking dish with tomatoes, lemon, and thyme.', ar: 'ضع شرائح السمك في صينية خزفية مع الطماطم والليمون والزعتر.' },
+      { en: 'Pour olive oil around the fish and bake at 160°C for 18–20 minutes until flaky.', ar: 'اسكب زيت الزيتون حول السمك واخبزه على حرارة ١٦٠ درجة لمدة ١٨-٢٠ دقيقة.' },
+    ],
+  },
+];
+
+export interface GuideSection {
+  id: string;
+  title: BiText;
+  summary: BiText;
+  points: BiText[];
+}
+
+export const GUIDE_SECTIONS: GuideSection[] = [
+  {
+    id: 'understanding-evoo',
+    title: {
+      en: '1. Understanding Extra Virgin Olive Oil',
+      ar: '١. ما هو زيت الزيتون البكر الممتاز؟',
+    },
+    summary: {
+      en: 'Extra Virgin Olive Oil (EVOO) is the highest grade of olive oil, extracted purely by mechanical means without chemical solvents or excessive heat.',
+      ar: 'زيت الزيتون البكر الممتاز هو أعلى درجات زيت الزيتون، ويُستخلص ميكانيكياً فقط دون مذيبات كيميائية أو حرارة عالية.',
+    },
+    points: [
+      {
+        en: 'International standards require free fatty acidity (expressed as oleic acid) of 0.8% or less—like the < 0.8% benchmark noted on GHOSN labels.',
+        ar: 'تشترط المعايير الدولية ألا تتجاوز نسبة الحموضة الحرة ٠.٨٪، وهو ما يلتزم به تصنيف زيت غُصن (حموضة أقل من ٠.٨٪).',
+      },
+      {
+        en: 'Natural polyphenols and vitamin E are preserved during gentle extraction, contributing freshness and antioxidant stability.',
+        ar: 'يحافظ العصر اللطيف على مضادات الأكسدة الطبيعية وفيتامين E، مما يمنح الزيت ثباتاً وقيمة غذائية.',
+      },
+    ],
+  },
+  {
+    id: 'categories',
+    title: {
+      en: '2. Olive Oil Categories Explained',
+      ar: '٢. الفرق بين فئات زيت الزيتون',
+    },
+    summary: {
+      en: 'Understanding label grades helps you match the right oil to your kitchen habits.',
+      ar: 'معرفة التصنيفات المدونة على العبوات تساعدك في اختيار الزيت الأنسب لاستخدامك اليومي.',
+    },
+    points: [
+      {
+        en: 'Extra Virgin Olive Oil: Unrefined, acidity ≤ 0.8%, zero sensory defects. Ideal for raw finishing, dressings, and everyday cooking.',
+        ar: 'بكر ممتاز: غير مكرر، حموضة ≤ ٠.٨٪، خالٍ من العيوب الحسية. مثالي للسلطات والتتبيل والطهي.',
+      },
+      {
+        en: 'Virgin Olive Oil: Mechanical extraction with acidity up to 2.0% and milder sensory standards.',
+        ar: 'بكر: مستخلص ميكانيكياً بنسبة حموضة تصل إلى ٢.٠٪.',
+      },
+      {
+        en: 'Refined / Pure Olive Oil: Chemically neutralized and deodorized, blended with a small amount of virgin oil—neutral in aroma.',
+        ar: 'زيت زيتون مكرر أو عادي: يمر بعمليات تكرير تزيل الرائحة واللون، ويُخلط أحياناً بنسبة بسيطة من الزيت البكر.',
+      },
+    ],
+  },
+  {
+    id: 'choosing-quality',
+    title: {
+      en: '3. How to Choose Quality Olive Oil',
+      ar: '٣. كيف تختار زيت زيتون عالي الجودة؟',
+    },
+    summary: {
+      en: 'Look past marketing buzzwords and check packaging, dates, and transparency.',
+      ar: 'ابحث عن الشفافية في البيانات ونوعية العبوة بدلاً من الشعارات العامة.',
+    },
+    points: [
+      {
+        en: 'Opaque or dark packaging: Light degrades olive oil quickly. Choose dark glass or food-grade metal tins.',
+        ar: 'العبوات المعتمة أو الداكنة: الضوء يسرّع الأكسدة، لذا يُفضل الزجاج الداكن أو الصفيح الغذائي.',
+      },
+      {
+        en: 'Clear production & expiry dates: Freshness matters; olive oil is a fruit juice, not an aged wine.',
+        ar: 'وضوح تاريخ الإنتاج والصلاحية: زيت الزيتون عصير ثمرة طازجة ويفضل استهلاكه خلال فترة صلاحيته.',
+      },
+      {
+        en: 'Color is not a quality test: Professional tasters use blue glasses because olive hue varies naturally from green to gold.',
+        ar: 'اللون ليس مقياساً للجودة: يعتمد المتذوقون المحترفون على الرائحة والطعم لاختلاف الألوان طبيعياً بين الأخضر والذهبي.',
+      },
+    ],
+  },
+  {
+    id: 'storage',
+    title: {
+      en: '4. Proper Storage at Home',
+      ar: '٤. التخزين السليم في المنزل',
+    },
+    summary: {
+      en: 'Olive oil has four main enemies: light, heat, oxygen, and time.',
+      ar: 'أعداء زيت الزيتون الأربعة هم: الضوء، الحرارة، الهواء، والزمن.',
+    },
+    points: [
+      {
+        en: 'Keep bottles away from the stove—store inside a cool, dark pantry between 14°C and 20°C.',
+        ar: 'أبعد العبوة عن الموقد واحفظها في خزانة مظلمة ومعتدلة البرودة.',
+      },
+      {
+        en: 'Use a smaller pouring bottle at the table while keeping larger tins sealed until needed.',
+        ar: 'استخدم زجاجة صغيرة للمائدة واحتفظ بالعبوة الكبيرة محكمة الغلق.',
+      },
+    ],
+  },
+  {
+    id: 'cooking-serving',
+    title: {
+      en: '5. Cooking & Serving Ideas',
+      ar: '٥. أفكار للطهي والتقديم اليومي',
+    },
+    summary: {
+      en: 'Quality extra virgin olive oil belongs in daily home cooking—not locked away for special occasions.',
+      ar: 'زيت الزيتون البكر الممتاز خُلق للاستخدام اليومي في مطبخك وليس للعرض فقط.',
+    },
+    points: [
+      {
+        en: 'Everyday sautéing & roasting: EVOO remains stable across typical home pan temperatures (~180°C–200°C) thanks to its monounsaturated fats and antioxidants.',
+        ar: 'الطهي والتحمير المعتدل: يتحمل درجات حرارة الطهي المنزلي المعتادة بفضل دهونه الأحادية ومضادات الأكسدة.',
+      },
+      {
+        en: 'Finishing touch: Drizzle raw over warm soups, roasted vegetables, grilled fish, or fresh morning bread.',
+        ar: 'اللمسة الأخيرة: أضف خيطاً من الزيت البارد فوق الشوربة الدافئة أو الخضروات المشوية قبل التقديم.',
+      },
+    ],
+  },
+];
+
+
+===== FILE: src/data/translations.ts =====
+export const UI_COPY = {
+  en: {
+    brandName: 'GHOSN',
+    brandSub: 'SINAI',
+    tagline: 'Rooted in Nature. Made for the Table.',
+    currency: 'EGP',
+    nav: {
+      home: 'Home',
+      shop: 'Shop',
+      story: 'Our Story',
+      table: 'The Table',
+      guide: 'Olive Oil Guide',
+      gifts: 'Gift Collection',
+      search: 'Search',
+      account: 'Account',
+      cart: 'Bag',
+    },
+    hero: {
+      eyebrow: 'Mediterranean Pantry • Sinai, Egypt',
+      headline: 'A little olive oil. A lot of life.',
+      sub: 'Discover the beauty of good olive oil and bring a little Mediterranean inspiration to your table.',
+      primaryCta: 'Shop Our Collection',
+      secondaryCta: 'Discover GHOSN',
+    },
+    home: {
+      featuredEyebrow: 'Selected Vessels',
+      featuredTitle: 'Bottled for Daily Rituals',
+      featuredNote: 'Preview prices only — confirm approved retail prices before accepting orders.',
+      storyEyebrow: 'Rooted in Stillness',
+      storyTitle: 'Why GHOSN?',
+      storyBody:
+        'Named after the Arabic word for branch (غُصن), GHOSN is shaped by the quiet rhythm of Mediterranean tables—where honest ingredients, unhurried conversation, and a generous pour of olive oil turn simple food into something memorable.',
+      storyCta: 'Read Our Story',
+      tableEyebrow: 'The Table Journal',
+      tableTitle: 'Everyday Mediterranean Inspiration',
+      tableCta: 'Explore All Recipes',
+      guideEyebrow: 'Editorial Education',
+      guideTitle: 'The Olive Oil Guide',
+      guideSub: 'Evidence-based guidance on reading labels, storing olive oil properly, and cooking without guesswork.',
+      guideCta: 'Read the Full Guide',
+      reviewsEyebrow: 'Notes From the Table',
+      reviewsTitle: 'Community Reflections',
+      reviewsNotice:
+        'Customer reviews will appear here after real purchases. We do not publish invented testimonials.',
+      reviewsSlots: [],
+      giftEyebrow: 'Gifting & Bundles',
+      giftTitle: 'Share the Table',
+      giftBody:
+        'Thoughtfully paired olive oil vessels designed for housewarmings, holiday gatherings, and kitchens that cook with care.',
+      giftCta: 'Explore Gift Collection',
+      newsEyebrow: 'Seasonal Notes',
+      newsTitle: 'Letters from the Table',
+      newsSub: 'Recipes, harvest updates, and pantry notes—sent gently, never loudly.',
+      newsPlaceholder: 'Enter your email address',
+      newsBtn: 'Subscribe',
+      newsSuccess: 'Preview recorded: Connect your newsletter provider (e.g., Mailchimp/Resend) to enable live subscriptions.',
+      newsError: 'Please enter a valid email address.',
+    },
+    shop: {
+      title: 'The Pantry Collection',
+      subtitle: 'Sinai Extra Virgin Olive Oil (< 0.8% acidity) and curated table bundles.',
+      all: 'All Products',
+      oil: 'Olive Oil',
+      gifts: 'Gift Sets',
+      from: 'From',
+      inStock: 'Available',
+      outStock: 'Currently Out of Stock',
+      addToCart: 'Add to Bag',
+      viewDetails: 'View Details',
+      addedFeedback: 'Added',
+      sampleBanner: 'Store preview: prices and stock are sample data. No live orders can be placed yet.',
+    },
+    product: {
+      backToShop: '← Back to Shop',
+      selectSize: 'Select Vessel Size',
+      quantity: 'Quantity',
+      originTitle: 'Origin & Packaging Details',
+      tasteTitle: 'Taste Profile',
+      tastePlaceholder: 'Verified tasting notes pending sensory panel completion — no unverified notes displayed.',
+      storageTitle: 'Storage & Shelf Life',
+      bundleTitle: 'Included in This Set',
+      relatedTitle: 'Pairs Well With',
+    },
+    storyPage: {
+      eyebrow: 'Our Story',
+      title: 'Rooted in Nature. Made for the Table.',
+      meaningTitle: 'The Meaning Behind GHOSN (غُصن)',
+      meaningBody:
+        'In Arabic, "Ghosn" means branch—the living limb of the olive tree that carries sunlight, season, and fruit. Rather than treating olive oil as an untouchable luxury, the name reflects continuity between land, harvest, and the everyday kitchen.',
+      philosophyTitle: 'Brand Philosophy',
+      philosophyBody:
+        'We believe good food rarely needs complication. Warm bread, ripe tomatoes, wild herbs, and honest olive oil are enough to anchor a table. Every GHOSN vessel is designed to sit comfortably beside both morning tea and evening cooking.',
+      natureTitle: 'Our Relationship With Nature & Food',
+      natureBody:
+        'Mediterranean food culture begins with restraint: respecting raw ingredients, honoring seasonal timing, and protecting oil from light and heat so what reaches your plate stays true.',
+      sourcingTitle: 'Sourcing & Production Information',
+      sourcingVerified:
+        'Verified Label Details: GHOSN Extra Virgin Olive Oil is labeled with free acidity under 0.8%, free from additives. The 1000ml brushed steel tin notes packing from Bir al-Abd, North Sinai, Egypt, with a 2-year shelf life from the production date.',
+      sourcingPlaceholder:
+        'Farm, harvest, cultivar and laboratory details will be shared only when documented for the relevant production batch.',
+    },
+    tablePage: {
+      eyebrow: 'The Table — Culinary Journal',
+      title: 'Mediterranean Recipes & Everyday Rituals',
+      subtitle: 'Simple ingredients lifted by generous olive oil.',
+      filters: {
+        all: 'All',
+        breakfast: 'Breakfast',
+        brunch: 'Brunch',
+        salads: 'Salads & Dressings',
+        dips: 'Dips',
+        everyday: 'Everyday Cooking',
+      },
+      ingredients: 'Ingredients',
+      preparation: 'Preparation',
+    },
+    guidePage: {
+      eyebrow: 'Olive Oil Guide',
+      title: 'Know What You Pour',
+      subtitle: 'Clear, evidence-based answers on olive oil grading, storage, and daily culinary use.',
+    },
+    giftsPage: {
+      eyebrow: 'Curated Gifting',
+      title: 'The Gift Collection',
+      subtitle: 'Olive oil vessels and pantry sets crafted for thoughtful hosts and shared tables.',
+    },
+    cart: {
+      title: 'Your Shopping Bag',
+      emptyTitle: 'Your bag is quietly empty.',
+      emptySub: 'Explore our Sinai olive oil vessels or curated gift sets to begin.',
+      emptyCta: 'Browse Collection',
+      subtotal: 'Subtotal',
+      shippingNote: 'Delivery fees calculated once shipping integration is connected.',
+      checkoutBtn: 'Proceed to Checkout',
+      remove: 'Remove',
+    },
+    checkout: {
+      title: 'Checkout Preview',
+      subtitle: 'This is a checkout interface preview only. No order is submitted and no payment or delivery service is connected.',
+      emptyWarning: 'Your bag is empty. Add products before proceeding to checkout.',
+      formTitle: 'Delivery Details',
+      name: 'Full Name',
+      email: 'Email Address',
+      phone: 'Mobile Number (Egypt)',
+      city: 'Governorate / City',
+      address: 'Street & Building Address',
+      notes: 'Delivery Notes (Optional)',
+      summaryTitle: 'Order Summary',
+      submitBtn: 'Check order setup (preview only)',
+      submitting: 'Checking integration...',
+      requiredError: 'Please complete all required delivery fields.',
+    },
+    search: {
+      placeholder: 'Search olive oils, gifts, recipes, or guide topics...',
+      empty: 'No matching items found. Try "Tin", "Sinai", "Labneh", or "Storage".',
+      productsGroup: 'Products',
+      recipesGroup: 'The Table Recipes',
+      guideGroup: 'Olive Oil Guide',
+    },
+    account: {
+      title: 'Customer Account',
+      notice:
+        'Authentication Preview: Connect NextAuth, Supabase, or Shopify Customer API to enable order history and saved addresses.',
+      close: 'Close',
+    },
+    footer: {
+      about: 'An independent Mediterranean olive oil brand celebrating honest ingredients and everyday tables.',
+      explore: 'Explore',
+      help: 'Information',
+      contact: 'Contact & Label Inquiries',
+      phoneBottle: 'Customer contact details will be published before launch.',
+      phoneTin: 'Product label enquiries will be handled through the official contact channel.',
+      emailPlaceholder: 'Official email address to be added before launch.',
+      policies: ['Shipping & Delivery', 'Returns & Product Care', 'Privacy Notice'],
+      rights: '© 2026 GHOSN (غُصن). Sample E-Commerce Architecture.',
+    },
+  },
+  ar: {
+    brandName: 'غُصن',
+    brandSub: 'سيناء',
+    tagline: 'من جذور الطبيعة.. لمائدتك.',
+    currency: 'ج.م',
+    nav: {
+      home: 'الرئيسية',
+      shop: 'المتجر',
+      story: 'قصتنا',
+      table: 'المائدة',
+      guide: 'دليل زيت الزيتون',
+      gifts: 'مجموعة الهدايا',
+      search: 'بحث',
+      account: 'الحساب',
+      cart: 'السلة',
+    },
+    hero: {
+      eyebrow: 'المطبخ المتوسطي • سيناء، مصر',
+      headline: 'القليل من زيت الزيتون.. الكثير من الحياة.',
+      sub: 'اكتشف جمال زيت الزيتون الجيد وأضف لمسة من إلهام البحر المتوسط إلى مائدتك اليومية.',
+      primaryCta: 'تسوق المجموعة',
+      secondaryCta: 'اكتشف غُصن',
+    },
+    home: {
+      featuredEyebrow: 'عبوات مختارة',
+      featuredTitle: 'مُعبأة لطقوسك اليومية',
+      featuredNote: 'الأسعار للمعاينة فقط — يجب اعتماد الأسعار النهائية قبل استقبال الطلبات.',
+      storyEyebrow: 'من جذور الهدوء',
+      storyTitle: 'لماذا غُصن؟',
+      storyBody:
+        'استُلهم اسم «غُصن» من ذلك الجزء الحيّ من شجرة الزيتون الذي يحمل الثمر والضوء. نحتفي في غُصن بإيقاع المائدة المتوسطية الدافئة، حيث يكفي الخبز الدافئ والمكونات الصادقة وزيت الزيتون النقي لصنع لحظة لا تُنسى.',
+      storyCta: 'اقرأ قصتنا',
+      tableEyebrow: 'دفتر المائدة',
+      tableTitle: 'إلهام يومي من المطبخ المتوسطي',
+      tableCta: 'استكشف جميع الوصفات',
+      guideEyebrow: 'محتوى معرفي',
+      guideTitle: 'دليل زيت الزيتون',
+      guideSub: 'إرشادات علمية مبسطة لفهم درجات زيت الزيتون، طرق تخزينه السليمة، واستخدامه في الطهي.',
+      guideCta: 'اقرأ الدليل كاملاً',
+      reviewsEyebrow: 'أصوات من المائدة',
+      reviewsTitle: 'تجارب المجتمع',
+      reviewsNotice:
+        'ستظهر هنا آراء العملاء بعد تجارب شراء حقيقية؛ لا ننشر تقييمات أو شهادات مصطنعة.',
+      reviewsSlots: [],
+      giftEyebrow: 'الهدايا والمجموعات',
+      giftTitle: 'شارك المائدة',
+      giftBody:
+        'تشكيلة مختارة من عبوات زيت الزيتون المصممة لإهداء الأهل والأصدقاء في المناسبات والزيارات الدافئة.',
+      giftCta: 'استكشف مجموعة الهدايا',
+      newsEyebrow: 'رسائل موسمية',
+      newsTitle: 'رسائل من المائدة',
+      newsSub: 'وصفات هادئة وإرشادات موسمية تصلك بلطف دون إزعاج.',
+      newsPlaceholder: 'أدخل بريدك الإلكتروني',
+      newsBtn: 'اشترك',
+      newsSuccess: 'معاينة: اربط خدمة البريد الإلكتروني المعتمدة لتفعيل الاشتراك الفعلي.',
+      newsError: 'يُرجى إدخال بريد إلكتروني صحيح.',
+    },
+    shop: {
+      title: 'مجموعة غُصن',
+      subtitle: 'زيت زيتون سيناوي بكر ممتاز (حموضة أقل من ٠.٨٪) ومجموعات المائدة المختارة.',
+      all: 'جميع المنتجات',
+      oil: 'زيت الزيتون',
+      gifts: 'مجموعات الهدايا',
+      from: 'يبدأ من',
+      inStock: 'متوفر',
+      outStock: 'غير متوفر حالياً',
+      addToCart: 'أضف إلى السلة',
+      viewDetails: 'تفاصيل المنتج',
+      addedFeedback: 'تمت الإضافة',
+      sampleBanner: 'معاينة للمتجر: الأسعار والمخزون بيانات تجريبية، ولا يمكن تنفيذ طلب حقيقي حالياً.',
+    },
+    product: {
+      backToShop: 'العودة إلى المتجر →',
+      selectSize: 'اختر حجم العبوة',
+      quantity: 'الكمية',
+      originTitle: 'بيانات المنشأ والتعبئة',
+      tasteTitle: 'الملف الحسي والنكهة',
+      tastePlaceholder: 'سيتم إدراج وصف النكهة الدقيق فور اعتماد نتائج التذوق المخبري والحسي.',
+      storageTitle: 'إرشادات الحفظ والصلاحية',
+      bundleTitle: 'محتويات هذه المجموعة',
+      relatedTitle: 'ينسجم مع',
+    },
+    storyPage: {
+      eyebrow: 'قصتنا',
+      title: 'من جذور الطبيعة.. لمائدتك.',
+      meaningTitle: 'معنى اسم غُصن (GHOSN)',
+      meaningBody:
+        'الغُصن هو امتداد الشجرة الحيّ الذي يحمل الأوراق والثمار ويصل الجذور بضوء الشمس. يعكس الاسم رابطاً بسيطاً وصادقاً بين الأرض والموسم ومائدة الطعام اليومية.',
+      philosophyTitle: 'فلسفة العلامة',
+      philosophyBody:
+        'نؤمن أن الطعام الطيب لا يحتاج إلى تعقيد؛ فقط مكونات صادقة، رغيف خبز دافئ، وسكبة سخية من زيت زيتون بكر ممتاز تمنح الوجبة روحها.',
+      natureTitle: 'علاقتنا بالطبيعة والطعام',
+      natureBody:
+        'تبدأ ثقافة المائدة المتوسطية من احترام الطبيعة ومراعاة تخزين الزيت وحمايته من الضوء والحرارة حتى يصل إلى طبقك بكامل قيمته.',
+      sourcingTitle: 'معلومات المصدر والإنتاج',
+      sourcingVerified:
+        'البيانات المؤكدة على العبوات: زيت زيتون غُصن بكر ممتاز بحموضة أقل من ٠.٨٪ وخالٍ من الإضافات. توضح العبوة المعدنية سعة ١٠٠٠ مل التعبئة من بئر العبد - شمال سيناء، مصر، بصلاحية عامين من تاريخ الإنتاج.',
+      sourcingPlaceholder:
+        'لن نذكر أسماء المزارع أو أصناف الزيتون أو بيانات التحليل إلا بعد توثيقها للتشغيلة المعنية.',
+    },
+    tablePage: {
+      eyebrow: 'المائدة — دفتر الوصفات',
+      title: 'وصفات متوسطية وإلهام يومي',
+      subtitle: 'مكونات بسيطة يرفع من قيمتها زيت زيتون صادق.',
+      filters: {
+        all: 'الكل',
+        breakfast: 'الفطور',
+        brunch: 'البرانش',
+        salads: 'السلطات والتتبيلات',
+        dips: 'المقبلات والغموس',
+        everyday: 'الطهي اليومي',
+      },
+      ingredients: 'المكونات',
+      preparation: 'طريقة التحضير',
+    },
+    guidePage: {
+      eyebrow: 'دليل زيت الزيتون',
+      title: 'اعرف ما تسكبه على مائدتك',
+      subtitle: 'معلومات دقيقة ومبسطة حول تصنيفات زيت الزيتون، طرق اختياره، وحفظه في المنزل.',
+    },
+    giftsPage: {
+      eyebrow: 'هدايا مختارة',
+      title: 'مجموعة الهدايا',
+      subtitle: 'عبوات ومجموعات منتقاة بعناية لإهداء محبي الضيافة والمطبخ الدافئ.',
+    },
+    cart: {
+      title: 'سلة التسوق',
+      emptyTitle: 'سلتك فارغة حالياً.',
+      emptySub: 'استكشف عبوات زيت زيتون غُصن أو مجموعات الهدايا للبدء.',
+      emptyCta: 'تصفح المتجر',
+      subtotal: 'المجموع الفرعي',
+      shippingNote: 'تُحسب رسوم الشحن عند ربط نظام التوصيل.',
+      checkoutBtn: 'إتمام المراجعة',
+      remove: 'إزالة',
+    },
+    checkout: {
+      title: 'معاينة إتمام الطلب',
+      subtitle: 'هذه معاينة لواجهة إتمام الطلب فقط؛ لا يتم إرسال طلب أو تحصيل أي مبلغ، ولم تُربط خدمات الدفع أو التوصيل بعد.',
+      emptyWarning: 'سلة التسوق فارغة. أضف منتجات للمتابعة.',
+      formTitle: 'بيانات التوصيل',
+      name: 'الاسم الكامل',
+      email: 'البريد الإلكتروني',
+      phone: 'رقم الهاتف (مصر)',
+      city: 'المحافظة / المدينة',
+      address: 'العنوان بالتفصيل',
+      notes: 'ملاحظات إضافية (اختياري)',
+      summaryTitle: 'ملخص الطلب',
+      submitBtn: 'مراجعة إعداد الطلب (معاينة فقط)',
+      submitting: 'جاري التحقق...',
+      requiredError: 'يرجى استكمال جميع حقول التوصيل المطلوبة.',
+    },
+    search: {
+      placeholder: 'ابحث عن عبوة، وصفة، أو موضوع في الدليل...',
+      empty: 'لا توجد نتائج مطابقة. جرّب البحث عن "سيناء"، "لبنة"، أو "تخزين".',
+      productsGroup: 'المنتجات',
+      recipesGroup: 'وصفات المائدة',
+      guideGroup: 'دليل زيت الزيتون',
+    },
+    account: {
+      title: 'حساب العميل',
+      notice:
+        'معاينة تسجيل الدخول: اربط نظام المصادقة (مثل NextAuth أو Supabase) لتفعيل سجل الطلبات والعناوين المحفوظة.',
+      close: 'إغلاق',
+    },
+    footer: {
+      about: 'علامة زيت زيتون متوسطية مستقلة تحتفي بالمكونات الصادقة وطقوس المائدة اليومية.',
+      explore: 'استكشف',
+      help: 'معلومات',
+      contact: 'التواصل وبيانات العبوات',
+      phoneBottle: 'سيتم نشر بيانات التواصل الرسمية قبل الإطلاق.',
+      phoneTin: 'لاستفسارات بيانات المنتج، يُرجى استخدام قناة التواصل الرسمية عند نشرها.',
+      emailPlaceholder: 'سيُضاف البريد الإلكتروني الرسمي قبل الإطلاق.',
+      policies: ['الشحن والتوصيل', 'الاسترجاع والعناية بالمنتج', 'الخصوصية'],
+      rights: '© ٢٠٢٦ غُصن (GHOSN). بنية متجر إلكتروني نموذجية.',
+    },
+  },
+} as const;
+
+
+===== FILE: src/services/commerceAdapter.ts =====
+import { BiText, OrderDraft } from '@/types/ghosn';
+
+export interface CheckoutResponse {
+  status: 'integration_required';
+  message: BiText;
+}
+
+export async function submitOrderPreview(
+  _draft: OrderDraft
+): Promise<CheckoutResponse> {
+  return {
+    status: 'integration_required',
+    message: {
+      en: 'Preview mode active: Payment gateway and delivery APIs are not connected yet. No real charge or order has been placed.',
+      ar: 'وضع المعاينة نشط: لم يتم ربط بوابة الدفع أو شركة الشحن بعد. لم يتم تنفيذ أي طلب أو سحب مالي فعلي.',
+    },
+  };
+}
+
+
+===== FILE: src/context/AppContext.tsx =====
+'use client';
+
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { PRODUCTS } from '@/data/catalog';
+import { UI_COPY } from '@/data/translations';
+import { CartLine, Locale, RouteView } from '@/types/ghosn';
+
+interface AppContextValue {
+  locale: Locale;
+  toggleLocale: () => void;
+  t: (typeof UI_COPY)[Locale];
+  route: RouteView;
+  selectedProductId: string;
+  navigate: (view: RouteView, productId?: string) => void;
+  cart: CartLine[];
+  addToCart: (productId: string, sizeId: string, qty?: number) => void;
+  updateQty: (productId: string, sizeId: string, qty: number) => void;
+  removeLine: (productId: string, sizeId: string) => void;
+  subtotal: number;
+  totalItems: number;
+  isCartOpen: boolean;
+  setCartOpen: (open: boolean) => void;
+  isSearchOpen: boolean;
+  setSearchOpen: (open: boolean) => void;
+  isAccountOpen: boolean;
+  setAccountOpen: (open: boolean) => void;
+}
+
+const AppContext = createContext<AppContextValue | null>(null);
+
+export function AppProvider({ children }: { children: React.ReactNode }) {
+  const [locale, setLocale] = useState<Locale>('ar');
+  const [localeReady, setLocaleReady] = useState(false);
+  const [route, setRoute] = useState<RouteView>('home');
+  const [selectedProductId, setSelectedProductId] = useState<string>(PRODUCTS[0].id);
+  const [cart, setCart] = useState<CartLine[]>([]);
+  const [isCartOpen, setCartOpen] = useState(false);
+  const [isSearchOpen, setSearchOpen] = useState(false);
+  const [isAccountOpen, setAccountOpen] = useState(false);
+
+  useEffect(() => {
+    // Restore the visitor's explicit language choice; Arabic remains the first-visit default.
+    try {
+      const savedLocale = window.localStorage.getItem('ghosn-locale');
+      if (savedLocale === 'ar' || savedLocale === 'en') setLocale(savedLocale);
+    } catch {
+      // Storage can be unavailable in private browsing; the site still works without it.
+    } finally {
+      setLocaleReady(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    const html = document.documentElement;
+    html.lang = locale;
+    html.dir = locale === 'ar' ? 'rtl' : 'ltr';
+    if (!localeReady) return;
+    try {
+      window.localStorage.setItem('ghosn-locale', locale);
+    } catch {
+      // Language switching remains available for the current session.
+    }
+  }, [locale, localeReady]);
+
+  const toggleLocale = () => {
+    setLocale((prev) => (prev === 'en' ? 'ar' : 'en'));
+  };
+
+  const navigate = (view: RouteView, productId?: string) => {
+    if (productId) setSelectedProductId(productId);
+    setRoute(view);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const addToCart = (productId: string, sizeId: string, qty = 1) => {
+    setCart((prev) => {
+      const idx = prev.findIndex((l) => l.productId === productId && l.sizeId === sizeId);
+      if (idx > -1) {
+        const copy = [...prev];
+        copy[idx] = { ...copy[idx], quantity: copy[idx].quantity + qty };
+        return copy;
+      }
+      return [...prev, { productId, sizeId, quantity: qty }];
+    });
+    setCartOpen(true);
+  };
+
+  const updateQty = (productId: string, sizeId: string, qty: number) => {
+    if (qty <= 0) {
+      removeLine(productId, sizeId);
+      return;
+    }
+    setCart((prev) =>
+      prev.map((l) =>
+        l.productId === productId && l.sizeId === sizeId ? { ...l, quantity: qty } : l
+      )
+    );
+  };
+
+  const removeLine = (productId: string, sizeId: string) => {
+    setCart((prev) => prev.filter((l) => !(l.productId === productId && l.sizeId === sizeId)));
+  };
+
+  const { subtotal, totalItems } = useMemo(() => {
+    let sum = 0;
+    let count = 0;
+    for (const line of cart) {
+      const product = PRODUCTS.find((p) => p.id === line.productId);
+      const size = product?.sizes.find((s) => s.id === line.sizeId);
+      if (size) sum += size.priceEGP * line.quantity;
+      count += line.quantity;
+    }
+    return { subtotal: sum, totalItems: count };
+  }, [cart]);
+
+  return (
+    <AppContext.Provider
+      value={{
+        locale,
+        toggleLocale,
+        t: UI_COPY[locale],
+        route,
+        selectedProductId,
+        navigate,
+        cart,
+        addToCart,
+        updateQty,
+        removeLine,
+        subtotal,
+        totalItems,
+        isCartOpen,
+        setCartOpen,
+        isSearchOpen,
+        setSearchOpen,
+        isAccountOpen,
+        setAccountOpen,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+}
+
+export function useApp() {
+  const ctx = useContext(AppContext);
+  if (!ctx) throw new Error('useApp must be used inside AppProvider');
+  return ctx;
+}
+
+
+===== FILE: src/components/Navbar.tsx =====
+'use client';
+
+import React, { useState } from 'react';
+import { useApp } from '@/context/AppContext';
+import { RouteView } from '@/types/ghosn';
+
+export function Navbar() {
+  const {
+    locale,
+    toggleLocale,
+    t,
+    route,
+    navigate,
+    totalItems,
+    setCartOpen,
+    setSearchOpen,
+    setAccountOpen,
+  } = useApp();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const links: { view: RouteView; label: string }[] = [
+    { view: 'shop', label: t.nav.shop },
+    { view: 'story', label: t.nav.story },
+    { view: 'table', label: t.nav.table },
+    { view: 'guide', label: t.nav.guide },
+    { view: 'gifts', label: t.nav.gifts },
+  ];
+
+  const handleNav = (v: RouteView) => {
+    navigate(v);
+    setMobileOpen(false);
+  };
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-sage/30 bg-cream/95 backdrop-blur-sm">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-8">
+        <button
+          onClick={() => handleNav('home')}
+          className="flex items-baseline gap-2 text-start focus:outline-none"
+          aria-label="GHOSN Home"
+        >
+          <span className="font-editorial text-2xl font-semibold tracking-wider text-deep sm:text-3xl">
+            {t.brandName}
+          </span>
+          <span className="text-[11px] uppercase tracking-[0.22em] text-olive">
+            {t.brandSub}
+          </span>
+        </button>
+
+        <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
+          {links.map((item) => (
+            <button
+              key={item.view}
+              onClick={() => handleNav(item.view)}
+              aria-current={route === item.view ? 'page' : undefined}
+              className={`border-b py-1 text-sm tracking-wide transition-colors ${
+                route === item.view
+                  ? 'border-olive text-deep font-medium'
+                  : 'border-transparent text-deep/75 hover:text-deep'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-3 sm:gap-5">
+          <button
+            onClick={toggleLocale}
+            className="border border-sage/60 px-2.5 py-1 text-xs font-medium tracking-wider text-deep transition-colors hover:border-olive hover:bg-paper"
+            aria-label="Switch Language"
+          >
+            {locale === 'en' ? 'العربية' : 'EN'}
+          </button>
+
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="text-sm text-deep/80 transition-colors hover:text-deep"
+            aria-label={t.nav.search}
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="7" />
+              <path strokeLinecap="round" d="m20 20-3.5-3.5" />
+            </svg>
+          </button>
+
+          <button
+            onClick={() => setAccountOpen(true)}
+            className="hidden text-deep/80 transition-colors hover:text-deep sm:block"
+            aria-label={t.nav.account}
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              <circle cx="12" cy="8" r="4" />
+              <path strokeLinecap="round" d="M4 20c1.8-3.6 5-5 8-5s6.2 1.4 8 5" />
+            </svg>
+          </button>
+
+          <button
+            onClick={() => setCartOpen(true)}
+            className="flex items-center gap-1.5 text-sm font-medium text-deep transition-colors hover:text-olive"
+            aria-label={t.nav.cart}
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 7h12l1 13H5L6 7Z" />
+              <path strokeLinecap="round" d="M9 7a3 3 0 0 1 6 0" />
+            </svg>
+            <span>({totalItems})</span>
+          </button>
+
+          <button
+            onClick={() => setMobileOpen((p) => !p)}
+            className="lg:hidden text-deep"
+            aria-label={mobileOpen ? (locale === 'ar' ? 'إغلاق القائمة' : 'Close menu') : (locale === 'ar' ? 'فتح القائمة' : 'Open menu')}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-navigation"
+          >
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              {mobileOpen ? (
+                <path strokeLinecap="round" d="M6 6l12 12M18 6 6 18" />
+              ) : (
+                <path strokeLinecap="round" d="M4 7h16M4 12h16M4 17h16" />
+              )}
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {mobileOpen && (
+        <div id="mobile-navigation" className="border-t border-sage/30 bg-paper px-6 py-5 lg:hidden">
+          <nav className="flex flex-col gap-3" aria-label={locale === 'ar' ? 'التنقل الرئيسي' : 'Mobile navigation'}>
+            {links.map((item) => (
+              <button
+                key={item.view}
+                onClick={() => handleNav(item.view)}
+                aria-current={route === item.view ? 'page' : undefined}
+                className={`py-2 text-start text-base ${
+                  route === item.view ? 'font-semibold text-olive' : 'text-deep'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+            <button
+              onClick={() => {
+                setAccountOpen(true);
+                setMobileOpen(false);
+              }}
+              className="py-2 text-start text-base text-deep/80"
+            >
+              {t.nav.account}
+            </button>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+}
+
+
+===== FILE: src/components/ProductCard.tsx =====
+'use client';
+
+import React, { useState } from 'react';
+import { useApp } from '@/context/AppContext';
+import { Product } from '@/types/ghosn';
+
+export function ProductCard({ product }: { product: Product }) {
+  const { locale, t, navigate, addToCart } = useApp();
+  const [justAdded, setJustAdded] = useState(false);
+
+  const defaultSize = product.sizes.find((s) => s.inStock) ?? product.sizes[0];
+
+  const handleQuickAdd = () => {
+    if (!defaultSize.inStock) return;
+    addToCart(product.id, defaultSize.id, 1);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1200);
+  };
+
+  return (
+    <article className="group flex flex-col border border-sage/35 bg-paper transition-colors hover:border-olive/60">
+      <button
+        type="button"
+        onClick={() => navigate('product', product.id)}
+        className="block w-full text-start focus-visible:outline-offset-[-3px]"
+        aria-label={`${t.shop.viewDetails}: ${product.name[locale]}`}
+      >
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-cream">
+        <img
+          src={product.images[0]}
+          alt={product.name[locale]}
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+        />
+        {!defaultSize.inStock && (
+          <span className="absolute start-3 top-3 bg-deep/85 px-2.5 py-1 text-xs text-cream">
+            {t.shop.outStock}
+          </span>
+        )}
+      </div>
+
+      <div className="flex flex-1 flex-col justify-between p-5">
+        <div>
+          <p className="text-xs uppercase tracking-widest text-olive">
+            {defaultSize.label[locale]}
+          </p>
+          <h3 className="font-editorial mt-1.5 text-2xl leading-snug text-deep">
+            {product.name[locale]}
+          </h3>
+          <p className="mt-2 text-sm leading-relaxed text-deep/75">
+            {product.shortDesc[locale]}
+          </p>
+        </div>
+      </div>
+      </button>
+
+        <div className="mt-6 flex items-center justify-between border-t border-sage/30 pt-4">
+          <span className="text-base font-medium text-deep">
+            {defaultSize.priceEGP} {t.currency}
+          </span>
+          <button
+            onClick={handleQuickAdd}
+            disabled={!defaultSize.inStock}
+            className="border border-olive bg-olive px-4 py-2 text-xs font-medium uppercase tracking-wider text-cream transition-colors hover:bg-deep hover:border-deep disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {justAdded ? t.shop.addedFeedback : t.shop.addToCart}
+          </button>
+        </div>
+    </article>
+  );
+}
+
+
+===== FILE: src/components/CartDrawer.tsx =====
+'use client';
+
+import React from 'react';
+import { useApp } from '@/context/AppContext';
+import { PRODUCTS } from '@/data/catalog';
+
+export function CartDrawer() {
+  const {
+    locale,
+    t,
+    cart,
+    isCartOpen,
+    setCartOpen,
+    updateQty,
+    removeLine,
+    subtotal,
+    navigate,
+  } = useApp();
+
+  if (!isCartOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex justify-end bg-deep/40 backdrop-blur-[2px]">
+      <div
+        className="flex h-full w-full max-w-md flex-col bg-cream border-s border-sage/40"
+        role="dialog"
+        aria-label={t.cart.title}
+      >
+        <div className="flex items-center justify-between border-b border-sage/30 px-6 py-5">
+          <h2 className="font-editorial text-2xl text-deep">{t.cart.title}</h2>
+          <button
+            onClick={() => setCartOpen(false)}
+            className="text-sm uppercase tracking-wider text-deep/70 hover:text-deep"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-6 py-6">
+          {cart.length === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center text-center">
+              <p className="font-editorial text-2xl text-deep">{t.cart.emptyTitle}</p>
+              <p className="mt-2 max-w-xs text-sm text-deep/70">{t.cart.emptySub}</p>
+              <button
+                onClick={() => {
+                  setCartOpen(false);
+                  navigate('shop');
+                }}
+                className="mt-6 border border-deep bg-deep px-6 py-3 text-xs uppercase tracking-widest text-cream transition-colors hover:bg-olive hover:border-olive"
+              >
+                {t.cart.emptyCta}
+              </button>
+            </div>
+          ) : (
+            <ul className="space-y-5">
+              {cart.map((line) => {
+                const product = PRODUCTS.find((p) => p.id === line.productId);
+                const size = product?.sizes.find((s) => s.id === line.sizeId);
+                if (!product || !size) return null;
+
+                return (
+                  <li
+                    key={`${line.productId}-${line.sizeId}`}
+                    className="flex gap-4 border-b border-sage/30 pb-5"
+                  >
+                    <img
+                      src={product.images[0]}
+                      alt={product.name[locale]}
+                      className="h-24 w-20 object-cover bg-paper border border-sage/30"
+                    />
+                    <div className="flex flex-1 flex-col justify-between">
+                      <div>
+                        <h3 className="font-editorial text-lg leading-tight text-deep">
+                          {product.name[locale]}
+                        </h3>
+                        <p className="mt-0.5 text-xs text-olive">{size.label[locale]}</p>
+                      </div>
+
+                      <div className="mt-3 flex items-center justify-between">
+                        <div className="flex items-center border border-sage/60 bg-paper">
+                          <button
+                            onClick={() => updateQty(line.productId, line.sizeId, line.quantity - 1)}
+                            className="px-2.5 py-1 text-sm text-deep hover:bg-cream"
+                            aria-label="Decrease quantity"
+                          >
+                            −
+                          </button>
+                          <span className="px-2.5 text-xs font-medium text-deep">
+                            {line.quantity}
+                          </span>
+                          <button
+                            onClick={() => updateQty(line.productId, line.sizeId, line.quantity + 1)}
+                            className="px-2.5 py-1 text-sm text-deep hover:bg-cream"
+                            aria-label="Increase quantity"
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        <div className="text-end">
+                          <p className="text-sm font-medium text-deep">
+                            {size.priceEGP * line.quantity} {t.currency}
+                          </p>
+                          <button
+                            onClick={() => removeLine(line.productId, line.sizeId)}
+                            className="mt-0.5 text-[11px] text-deep/60 underline hover:text-deep"
+                          >
+                            {t.cart.remove}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+
+        {cart.length > 0 && (
+          <div className="border-t border-sage/30 bg-paper px-6 py-5">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-deep/80">{t.cart.subtotal}</span>
+              <span className="font-editorial text-2xl font-medium text-deep">
+                {subtotal} {t.currency}
+              </span>
+            </div>
+            <p className="mt-1 text-xs text-deep/65">{t.cart.shippingNote}</p>
+            <button
+              onClick={() => {
+                setCartOpen(false);
+                navigate('checkout');
+              }}
+              className="mt-4 w-full bg-olive py-3.5 text-xs font-medium uppercase tracking-widest text-cream transition-colors hover:bg-deep"
+            >
+              {t.cart.checkoutBtn}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+===== FILE: src/components/SearchModal.tsx =====
+'use client';
+
+import React, { useState } from 'react';
+import { useApp } from '@/context/AppContext';
+import { PRODUCTS } from '@/data/catalog';
+import { GUIDE_SECTIONS, RECIPES } from '@/data/editorial';
+
+export function SearchModal() {
+  const { locale, t, isSearchOpen, setSearchOpen, navigate } = useApp();
+  const [query, setQuery] = useState('');
+
+  if (!isSearchOpen) return null;
+
+  const q = query.trim().toLowerCase();
+
+  const matchingProducts = q
+    ? PRODUCTS.filter(
+        (p) =>
+          p.name[locale].toLowerCase().includes(q) ||
+          p.shortDesc[locale].toLowerCase().includes(q)
+      )
+    : [];
+
+  const matchingRecipes = q
+    ? RECIPES.filter(
+        (r) =>
+          r.title[locale].toLowerCase().includes(q) ||
+          r.intro[locale].toLowerCase().includes(q)
+      )
+    : [];
+
+  const matchingGuides = q
+    ? GUIDE_SECTIONS.filter(
+        (g) =>
+          g.title[locale].toLowerCase().includes(q) ||
+          g.summary[locale].toLowerCase().includes(q)
+      )
+    : [];
+
+  const hasResults =
+    matchingProducts.length > 0 || matchingRecipes.length > 0 || matchingGuides.length > 0;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-deep/45 px-4 pt-20 backdrop-blur-[2px]">
+      <div className="w-full max-w-2xl border border-sage/40 bg-cream p-6">
+        <div className="flex items-center gap-3 border-b border-sage/40 pb-3">
+          <input
+            type="search"
+            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t.search.placeholder}
+            className="w-full bg-transparent text-base text-deep placeholder:text-deep/50 focus:outline-none"
+          />
+          <button
+            onClick={() => setSearchOpen(false)}
+            className="text-xs uppercase tracking-wider text-deep/70 hover:text-deep"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="mt-5 max-h-80 overflow-y-auto space-y-5">
+          {q && !hasResults && <p className="text-sm text-deep/70">{t.search.empty}</p>}
+
+          {matchingProducts.length > 0 && (
+            <div>
+              <p className="text-xs uppercase tracking-widest text-olive">{t.search.productsGroup}</p>
+              <div className="mt-2 space-y-2">
+                {matchingProducts.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => {
+                      navigate('product', p.id);
+                      setSearchOpen(false);
+                    }}
+                    className="block w-full border border-sage/30 bg-paper px-4 py-2.5 text-start text-sm text-deep hover:border-olive"
+                  >
+                    {p.name[locale]}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {matchingRecipes.length > 0 && (
+            <div>
+              <p className="text-xs uppercase tracking-widest text-olive">{t.search.recipesGroup}</p>
+              <div className="mt-2 space-y-2">
+                {matchingRecipes.map((r) => (
+                  <button
+                    key={r.id}
+                    onClick={() => {
+                      navigate('table');
+                      setSearchOpen(false);
+                    }}
+                    className="block w-full border border-sage/30 bg-paper px-4 py-2.5 text-start text-sm text-deep hover:border-olive"
+                  >
+                    {r.title[locale]}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {matchingGuides.length > 0 && (
+            <div>
+              <p className="text-xs uppercase tracking-widest text-olive">{t.search.guideGroup}</p>
+              <div className="mt-2 space-y-2">
+                {matchingGuides.map((g) => (
+                  <button
+                    key={g.id}
+                    onClick={() => {
+                      navigate('guide');
+                      setSearchOpen(false);
+                    }}
+                    className="block w-full border border-sage/30 bg-paper px-4 py-2.5 text-start text-sm text-deep hover:border-olive"
+                  >
+                    {g.title[locale]}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+===== FILE: src/components/AccountModal.tsx =====
+'use client';
+
+import React from 'react';
+import { useApp } from '@/context/AppContext';
+
+export function AccountModal() {
+  const { t, isAccountOpen, setAccountOpen } = useApp();
+  if (!isAccountOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-deep/45 px-4">
+      <div className="w-full max-w-md border border-sage/40 bg-cream p-7">
+        <h2 className="font-editorial text-2xl text-deep">{t.account.title}</h2>
+        <p className="mt-3 text-sm leading-relaxed text-deep/80">{t.account.notice}</p>
+        <button
+          onClick={() => setAccountOpen(false)}
+          className="mt-6 border border-deep bg-deep px-5 py-2.5 text-xs uppercase tracking-widest text-cream hover:bg-olive hover:border-olive"
+        >
+          {t.account.close}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
+===== FILE: src/components/Footer.tsx =====
+'use client';
+
+import React from 'react';
+import { useApp } from '@/context/AppContext';
+
+export function Footer() {
+  const { t, navigate } = useApp();
+
+  return (
+    <footer className="border-t border-sage/35 bg-deep text-cream">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-8 md:grid-cols-4">
+        <div>
+          <p className="font-editorial text-3xl tracking-wider">{t.brandName}</p>
+          <p className="mt-1 text-xs uppercase tracking-[0.2em] text-gold">{t.tagline}</p>
+          <p className="mt-4 text-sm leading-relaxed text-cream/75">{t.footer.about}</p>
+        </div>
+
+        <div>
+          <p className="text-xs uppercase tracking-widest text-sage">{t.footer.explore}</p>
+          <ul className="mt-4 space-y-2.5 text-sm text-cream/85">
+            <li><button onClick={() => navigate('shop')} className="hover:text-gold">{t.nav.shop}</button></li>
+            <li><button onClick={() => navigate('story')} className="hover:text-gold">{t.nav.story}</button></li>
+            <li><button onClick={() => navigate('table')} className="hover:text-gold">{t.nav.table}</button></li>
+            <li><button onClick={() => navigate('guide')} className="hover:text-gold">{t.nav.guide}</button></li>
+            <li><button onClick={() => navigate('gifts')} className="hover:text-gold">{t.nav.gifts}</button></li>
+          </ul>
+        </div>
+
+        <div>
+          <p className="text-xs uppercase tracking-widest text-sage">{t.footer.help}</p>
+          <ul className="mt-4 space-y-2.5 text-sm text-cream/75">
+            {t.footer.policies.map((pol) => (
+              <li key={pol}>{pol}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <p className="text-xs uppercase tracking-widest text-sage">{t.footer.contact}</p>
+          <ul className="mt-4 space-y-2 text-sm text-cream/80">
+            <li>{t.footer.phoneBottle}</li>
+            <li>{t.footer.phoneTin}</li>
+            <li>{t.footer.emailPlaceholder}</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="border-t border-cream/10 px-4 py-5 text-center text-xs text-cream/60">
+        {t.footer.rights}
+      </div>
+    </footer>
+  );
+}
+
+
+===== FILE: src/components/views/HomeView.tsx =====
+'use client';
+
+import React, { useState } from 'react';
+import { useApp } from '@/context/AppContext';
+import { PRODUCTS } from '@/data/catalog';
+import { RECIPES } from '@/data/editorial';
+import { ProductCard } from '@/components/ProductCard';
+
+export function HomeView() {
+  const { locale, t, navigate } = useApp();
+  const [email, setEmail] = useState('');
+  const [newsMsg, setNewsMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
+
+  const featured = PRODUCTS.filter((p) => p.featured);
+  const featuredRecipes = RECIPES.slice(0, 3);
+
+  const handleNewsletter = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.includes('@') || !email.includes('.')) {
+      setNewsMsg({ type: 'err', text: t.home.newsError });
+      return;
+    }
+    setNewsMsg({ type: 'ok', text: t.home.newsSuccess });
+    setEmail('');
+  };
+
+  return (
+    <div className="reveal-view">
+      <section className="relative overflow-hidden border-b border-sage/30 bg-deep text-cream">
+        <img
+          src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=1800&q=80"
+          alt="Mediterranean table with olive oil"
+          className="absolute inset-0 h-full w-full object-cover opacity-55"
+        />
+        <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-8 sm:py-36">
+          <p className="text-xs uppercase tracking-[0.25em] text-gold">{t.hero.eyebrow}</p>
+          <h1 className="font-editorial mt-4 max-w-2xl text-5xl leading-[1.08] sm:text-7xl">
+            {t.hero.headline}
+          </h1>
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-cream/90 sm:text-lg">
+            {t.hero.sub}
+          </p>
+          <div className="mt-9 flex flex-wrap gap-4">
+            <button
+              onClick={() => navigate('shop')}
+              className="bg-cream px-7 py-3.5 text-xs font-semibold uppercase tracking-widest text-deep transition-colors hover:bg-gold"
+            >
+              {t.hero.primaryCta}
+            </button>
+            <button
+              onClick={() => navigate('story')}
+              className="border border-cream/70 px-7 py-3.5 text-xs font-semibold uppercase tracking-widest text-cream transition-colors hover:bg-cream/10"
+            >
+              {t.hero.secondaryCta}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-8">
+        <div className="flex flex-col justify-between gap-4 border-b border-sage/30 pb-6 sm:flex-row sm:items-end">
+          <div>
+            <p className="text-xs uppercase tracking-[0.22em] text-olive">{t.home.featuredEyebrow}</p>
+            <h2 className="font-editorial mt-2 text-4xl text-deep">{t.home.featuredTitle}</h2>
+          </div>
+          <p className="text-xs text-deep/65">{t.home.featuredNote}</p>
+        </div>
+
+        <div className="mt-10 grid gap-8 md:grid-cols-3">
+          {featured.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </section>
+
+      <section className="border-y border-sage/30 bg-paper">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-8 lg:grid-cols-2">
+          <div className="aspect-[4/3] overflow-hidden border border-sage/30 bg-cream">
+            <img
+              src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80"
+              alt="Fresh bread and olive oil"
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-[0.22em] text-olive">{t.home.storyEyebrow}</p>
+            <h2 className="font-editorial mt-2 text-4xl text-deep sm:text-5xl">
+              {t.home.storyTitle}
+            </h2>
+            <p className="mt-5 text-base leading-relaxed text-deep/80">{t.home.storyBody}</p>
+            <button
+              onClick={() => navigate('story')}
+              className="mt-8 border border-deep px-6 py-3 text-xs font-medium uppercase tracking-widest text-deep transition-colors hover:bg-deep hover:text-cream"
+            >
+              {t.home.storyCta}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-8">
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <p className="text-xs uppercase tracking-[0.22em] text-olive">{t.home.tableEyebrow}</p>
+            <h2 className="font-editorial mt-2 text-4xl text-deep">{t.home.tableTitle}</h2>
+          </div>
+          <button
+            onClick={() => navigate('table')}
+            className="text-xs font-semibold uppercase tracking-widest text-olive underline underline-offset-4 hover:text-deep"
+          >
+            {t.home.tableCta}
+          </button>
+        </div>
+
+        <div className="mt-10 grid gap-8 md:grid-cols-3">
+          {featuredRecipes.map((r) => (
+            <article
+              key={r.id}
+              onClick={() => navigate('table')}
+              className="group cursor-pointer border border-sage/35 bg-paper"
+            >
+              <div className="aspect-[4/3] overflow-hidden">
+                <img
+                  src={r.image}
+                  alt={r.title[locale]}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+              </div>
+              <div className="p-5">
+                <p className="text-xs uppercase tracking-widest text-olive">{r.prepTime[locale]}</p>
+                <h3 className="font-editorial mt-1.5 text-2xl text-deep">{r.title[locale]}</h3>
+                <p className="mt-2 text-sm text-deep/75">{r.intro[locale]}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-y border-sage/30 bg-olive text-cream">
+        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 px-4 py-16 sm:px-8 lg:flex-row lg:items-center">
+          <div className="max-w-2xl">
+            <p className="text-xs uppercase tracking-[0.22em] text-gold">{t.home.guideEyebrow}</p>
+            <h2 className="font-editorial mt-2 text-4xl">{t.home.guideTitle}</h2>
+            <p className="mt-3 text-base text-cream/85">{t.home.guideSub}</p>
+          </div>
+          <button
+            onClick={() => navigate('guide')}
+            className="border border-cream px-7 py-3.5 text-xs font-semibold uppercase tracking-widest text-cream transition-colors hover:bg-cream hover:text-deep"
+          >
+            {t.home.guideCta}
+          </button>
+        </div>
+      </section>
+
+      <section className="border-y border-sage/30 bg-paper">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-8">
+          <p className="text-xs uppercase tracking-[0.22em] text-olive">{t.home.reviewsEyebrow}</p>
+          <h2 className="font-editorial mt-2 text-4xl text-deep">{t.home.reviewsTitle}</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-deep/70">{t.home.reviewsNotice}</p>
+        </div>
+      </section>
+
+      <section className="border-y border-sage/30 bg-paper">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-8 lg:grid-cols-2">
+          <div>
+            <p className="text-xs uppercase tracking-[0.22em] text-olive">{t.home.giftEyebrow}</p>
+            <h2 className="font-editorial mt-2 text-4xl text-deep">{t.home.giftTitle}</h2>
+            <p className="mt-4 max-w-lg text-base text-deep/80">{t.home.giftBody}</p>
+            <button
+              onClick={() => navigate('gifts')}
+              className="mt-7 bg-olive px-7 py-3.5 text-xs font-semibold uppercase tracking-widest text-cream hover:bg-deep"
+            >
+              {t.home.giftCta}
+            </button>
+          </div>
+          <div className="aspect-[16/10] overflow-hidden border border-sage/30">
+            <img
+              src="https://images.unsplash.com/photo-1596560548464-f010549b84d7?auto=format&fit=crop&w=1200&q=80"
+              alt="GHOSN Gift Collection"
+              className="h-full w-full object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-8">
+        <p className="text-xs uppercase tracking-[0.22em] text-olive">{t.home.newsEyebrow}</p>
+        <h2 className="font-editorial mt-2 text-4xl text-deep">{t.home.newsTitle}</h2>
+        <p className="mt-2 text-sm text-deep/75">{t.home.newsSub}</p>
+
+        <form onSubmit={handleNewsletter} className="mt-7 flex flex-col gap-3 sm:flex-row">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t.home.newsPlaceholder}
+            className="flex-1 border border-sage/60 bg-paper px-4 py-3 text-sm text-deep focus:border-olive focus:outline-none"
+          />
+          <button
+            type="submit"
+            className="bg-deep px-7 py-3 text-xs font-semibold uppercase tracking-widest text-cream hover:bg-olive"
+          >
+            {t.home.newsBtn}
+          </button>
+        </form>
+        {newsMsg && (
+          <p className={`mt-3 text-xs ${newsMsg.type === 'err' ? 'text-red-700' : 'text-olive'}`}>
+            {newsMsg.text}
+          </p>
+        )}
+      </section>
+    </div>
+  );
+}
+
+
+===== FILE: src/components/views/ShopView.tsx =====
+'use client';
+
+import React, { useState } from 'react';
+import { useApp } from '@/context/AppContext';
+import { PRODUCTS } from '@/data/catalog';
+import { ProductCard } from '@/components/ProductCard';
+
+export function ShopView() {
+  const { t } = useApp();
+  const [filter, setFilter] = useState<'all' | 'olive-oil' | 'gift'>('all');
+
+  const items = PRODUCTS.filter((p) => (filter === 'all' ? true : p.category === filter));
+
+  return (
+    <section className="reveal-view mx-auto max-w-7xl px-4 py-14 sm:px-8">
+      <div className="border-b border-sage/35 pb-8">
+        <h1 className="font-editorial text-5xl text-deep">{t.shop.title}</h1>
+        <p className="mt-2 text-base text-deep/75">{t.shop.subtitle}</p>
+        <div className="mt-7 flex flex-wrap gap-3">
+          {(['all', 'olive-oil', 'gift'] as const).map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setFilter(cat)}
+              className={`border px-4 py-2 text-xs uppercase tracking-widest transition-colors ${
+                filter === cat
+                  ? 'border-deep bg-deep text-cream'
+                  : 'border-sage/50 bg-paper text-deep hover:border-olive'
+              }`}
+            >
+              {cat === 'all' ? t.shop.all : cat === 'olive-oil' ? t.shop.oil : t.shop.gifts}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
+===== FILE: src/components/views/ProductDetailView.tsx =====
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { useApp } from '@/context/AppContext';
+import { PRODUCTS } from '@/data/catalog';
+import { ProductCard } from '@/components/ProductCard';
+
+export function ProductDetailView() {
+  const { locale, t, selectedProductId, navigate, addToCart } = useApp();
+  const product = PRODUCTS.find((p) => p.id === selectedProductId) ?? PRODUCTS[0];
+
+  const [activeImg, setActiveImg] = useState(0);
+  const [sizeId, setSizeId] = useState(product.sizes[0].id);
+  const [qty, setQty] = useState(1);
+
+  useEffect(() => {
+    setActiveImg(0);
+    setSizeId(product.sizes[0].id);
+    setQty(1);
+  }, [product]);
+
+  const activeSize = product.sizes.find((s) => s.id === sizeId) ?? product.sizes[0];
+  const related = PRODUCTS.filter((p) => p.id !== product.id).slice(0, 3);
+
+  return (
+    <section className="reveal-view mx-auto max-w-7xl px-4 py-12 sm:px-8">
+      <button
+        onClick={() => navigate('shop')}
+        className="text-xs font-medium uppercase tracking-widest text-olive hover:text-deep"
+      >
+        {t.product.backToShop}
+      </button>
+
+      <div className="mt-8 grid gap-12 lg:grid-cols-2">
+        <div>
+          <div className="aspect-[4/5] border border-sage/35 bg-paper">
+            <img
+              src={product.images[activeImg] ?? product.images[0]}
+              alt={product.name[locale]}
+              className="h-full w-full object-cover"
+            />
+          </div>
+          {product.images.length > 1 && (
+            <div className="mt-4 flex gap-3">
+              {product.images.map((img, i) => (
+                <button
+                  key={img}
+                  onClick={() => setActiveImg(i)}
+                  className={`h-20 w-16 border ${
+                    activeImg === i ? 'border-olive' : 'border-sage/40 opacity-70'
+                  }`}
+                >
+                  <img src={img} alt="" className="h-full w-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div>
+          <p className="text-xs uppercase tracking-widest text-olive">{product.sku}</p>
+          <h1 className="font-editorial mt-2 text-4xl text-deep sm:text-5xl">
+            {product.name[locale]}
+          </h1>
+          <p className="mt-3 text-2xl font-medium text-deep">
+            {activeSize.priceEGP} {t.currency}
+          </p>
+          <p className="mt-5 text-base leading-relaxed text-deep/85">{product.fullDesc[locale]}</p>
+
+          <div className="mt-7">
+            <p className="text-xs uppercase tracking-widest text-deep/75">
+              {t.product.selectSize}
+            </p>
+            <div className="mt-2.5 flex flex-wrap gap-3">
+              {product.sizes.map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => setSizeId(s.id)}
+                  className={`border px-4 py-2.5 text-xs font-medium transition-colors ${
+                    s.id === activeSize.id
+                      ? 'border-deep bg-deep text-cream'
+                      : 'border-sage/60 bg-paper text-deep hover:border-olive'
+                  }`}
+                >
+                  {s.label[locale]}
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 text-xs text-olive">
+              {activeSize.inStock ? t.shop.inStock : t.shop.outStock}
+            </p>
+          </div>
+
+          <div className="mt-6 flex items-center gap-4">
+            <div className="flex items-center border border-sage/60 bg-paper">
+              <button
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                className="px-4 py-3 text-deep hover:bg-cream"
+              >
+                −
+              </button>
+              <span className="px-4 text-sm font-medium">{qty}</span>
+              <button
+                onClick={() => setQty((q) => q + 1)}
+                className="px-4 py-3 text-deep hover:bg-cream"
+              >
+                +
+              </button>
+            </div>
+
+            <button
+              disabled={!activeSize.inStock}
+              onClick={() => addToCart(product.id, activeSize.id, qty)}
+              className="flex-1 bg-olive py-3.5 text-xs font-semibold uppercase tracking-widest text-cream transition-colors hover:bg-deep disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {t.shop.addToCart}
+            </button>
+          </div>
+
+          <div className="mt-10 space-y-5 border-t border-sage/35 pt-6 text-sm">
+            {product.bundleContents && (
+              <div>
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-olive">
+                  {t.product.bundleTitle}
+                </h2>
+                <ul className="mt-2 list-disc ps-5 text-deep/80 space-y-1">
+                  {product.bundleContents.map((b, i) => (
+                    <li key={i}>{b[locale]}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div>
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-olive">
+                {t.product.originTitle}
+              </h2>
+              <p className="mt-1.5 leading-relaxed text-deep/80">{product.originDetails[locale]}</p>
+            </div>
+
+            <div>
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-olive">
+                {t.product.tasteTitle}
+              </h2>
+              <p className="mt-1.5 leading-relaxed text-deep/75">
+                {product.tasteProfile ? product.tasteProfile[locale] : t.product.tastePlaceholder}
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-olive">
+                {t.product.storageTitle}
+              </h2>
+              <p className="mt-1.5 leading-relaxed text-deep/80">{product.storageInfo[locale]}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-20 border-t border-sage/35 pt-12">
+        <h2 className="font-editorial text-3xl text-deep">{t.product.relatedTitle}</h2>
+        <div className="mt-7 grid gap-8 md:grid-cols-3">
+          {related.map((item) => (
+            <ProductCard key={item.id} product={item} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+===== FILE: src/components/views/TableView.tsx =====
+'use client';
+
+import React, { useState } from 'react';
+import { useApp } from '@/context/AppContext';
+import { RECIPES } from '@/data/editorial';
+import { Recipe } from '@/types/ghosn';
+
+export function TableView() {
+  const { locale, t } = useApp();
+  const [cat, setCat] = useState<'all' | Recipe['category']>('all');
+
+  const filtered = RECIPES.filter((r) => (cat === 'all' ? true : r.category === cat));
+
+  const filterKeys: ('all' | Recipe['category'])[] = [
+    'all',
+    'breakfast',
+    'brunch',
+    'salads',
+    'dips',
+    'everyday',
+  ];
+
+  return (
+    <section className="reveal-view mx-auto max-w-7xl px-4 py-14 sm:px-8">
+      <div className="border-b border-sage/35 pb-8">
+        <p className="text-xs uppercase tracking-[0.22em] text-olive">{t.tablePage.eyebrow}</p>
+        <h1 className="font-editorial mt-2 text-5xl text-deep">{t.tablePage.title}</h1>
+        <p className="mt-2 text-base text-deep/75">{t.tablePage.subtitle}</p>
+
+        <div className="mt-7 flex flex-wrap gap-2.5">
+          {filterKeys.map((key) => (
+            <button
+              key={key}
+              onClick={() => setCat(key)}
+              className={`border px-4 py-2 text-xs uppercase tracking-wider ${
+                cat === key
+                  ? 'border-deep bg-deep text-cream'
+                  : 'border-sage/50 bg-paper text-deep hover:border-olive'
+              }`}
+            >
+              {t.tablePage.filters[key]}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-12 space-y-14">
+        {filtered.map((recipe) => (
+          <article
+            key={recipe.id}
+            className="grid gap-8 border border-sage/35 bg-paper p-6 lg:grid-cols-12 lg:p-8"
+          >
+            <div className="aspect-[4/3] overflow-hidden lg:col-span-5">
+              <img
+                src={recipe.image}
+                alt={recipe.title[locale]}
+                className="h-full w-full object-cover"
+              />
+            </div>
+
+            <div className="lg:col-span-7">
+              <p className="text-xs uppercase tracking-widest text-olive">
+                {t.tablePage.filters[recipe.category]} • {recipe.prepTime[locale]}
+              </p>
+              <h2 className="font-editorial mt-2 text-3xl text-deep">{recipe.title[locale]}</h2>
+              <p className="mt-3 text-sm leading-relaxed text-deep/80">{recipe.intro[locale]}</p>
+
+              <div className="mt-6 grid gap-6 sm:grid-cols-2">
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-olive">
+                    {t.tablePage.ingredients}
+                  </h3>
+                  <ul className="mt-2.5 list-disc space-y-1.5 ps-4 text-sm text-deep/85">
+                    {recipe.ingredients.map((ing, i) => (
+                      <li key={i}>{ing[locale]}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-olive">
+                    {t.tablePage.preparation}
+                  </h3>
+                  <ol className="mt-2.5 list-decimal space-y-2 ps-4 text-sm text-deep/85">
+                    {recipe.steps.map((step, i) => (
+                      <li key={i}>{step[locale]}</li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
+===== FILE: src/components/views/StoryView.tsx =====
+'use client';
+
+import React from 'react';
+import { useApp } from '@/context/AppContext';
+
+export function StoryView() {
+  const { t } = useApp();
+
+  return (
+    <article className="reveal-view">
+      <div className="mx-auto max-w-5xl px-4 py-16 sm:px-8">
+        <p className="text-xs uppercase tracking-[0.25em] text-olive">{t.storyPage.eyebrow}</p>
+        <h1 className="font-editorial mt-3 text-5xl leading-tight text-deep sm:text-6xl">
+          {t.storyPage.title}
+        </h1>
+
+        <div className="mt-10 aspect-[16/9] overflow-hidden border border-sage/35 bg-paper">
+          <img
+            src="https://images.unsplash.com/photo-1510626176961-4b57d4fbad03?auto=format&fit=crop&w=1600&q=80"
+            alt="Olive branches and sunlight"
+            className="h-full w-full object-cover"
+          />
+        </div>
+
+        <div className="mt-14 space-y-12">
+          <section className="border-b border-sage/30 pb-10">
+            <h2 className="font-editorial text-3xl text-deep">{t.storyPage.meaningTitle}</h2>
+            <p className="mt-4 text-base leading-relaxed text-deep/85">
+              {t.storyPage.meaningBody}
+            </p>
+          </section>
+
+          <section className="border-b border-sage/30 pb-10">
+            <h2 className="font-editorial text-3xl text-deep">{t.storyPage.philosophyTitle}</h2>
+            <p className="mt-4 text-base leading-relaxed text-deep/85">
+              {t.storyPage.philosophyBody}
+            </p>
+          </section>
+
+          <section className="border-b border-sage/30 pb-10">
+            <h2 className="font-editorial text-3xl text-deep">{t.storyPage.natureTitle}</h2>
+            <p className="mt-4 text-base leading-relaxed text-deep/85">
+              {t.storyPage.natureBody}
+            </p>
+          </section>
+
+          <section className="border border-sage/40 bg-paper p-7">
+            <h2 className="font-editorial text-3xl text-deep">{t.storyPage.sourcingTitle}</h2>
+            <p className="mt-4 text-base leading-relaxed text-deep/85">
+              {t.storyPage.sourcingVerified}
+            </p>
+            <p className="mt-4 border-t border-dashed border-sage pt-4 text-sm text-olive">
+              {t.storyPage.sourcingPlaceholder}
+            </p>
+          </section>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+===== FILE: src/components/views/GuideView.tsx =====
+'use client';
+
+import React from 'react';
+import { useApp } from '@/context/AppContext';
+import { GUIDE_SECTIONS } from '@/data/editorial';
+
+export function GuideView() {
+  const { locale, t } = useApp();
+
+  return (
+    <section className="reveal-view mx-auto max-w-4xl px-4 py-16 sm:px-8">
+      <div className="border-b border-sage/35 pb-8">
+        <p className="text-xs uppercase tracking-[0.22em] text-olive">{t.guidePage.eyebrow}</p>
+        <h1 className="font-editorial mt-2 text-5xl text-deep">{t.guidePage.title}</h1>
+        <p className="mt-3 text-base text-deep/75">{t.guidePage.subtitle}</p>
+      </div>
+
+      <div className="mt-10 space-y-10">
+        {GUIDE_SECTIONS.map((sec) => (
+          <article key={sec.id} className="border border-sage/35 bg-paper p-7">
+            <h2 className="font-editorial text-3xl text-deep">{sec.title[locale]}</h2>
+            <p className="mt-3 text-base leading-relaxed text-deep/85">{sec.summary[locale]}</p>
+            <ul className="mt-4 list-disc space-y-2 ps-5 text-sm leading-relaxed text-deep/80">
+              {sec.points.map((pt, i) => (
+                <li key={i}>{pt[locale]}</li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
+===== FILE: src/components/views/GiftsView.tsx =====
+'use client';
+
+import React from 'react';
+import { useApp } from '@/context/AppContext';
+import { PRODUCTS } from '@/data/catalog';
+import { ProductCard } from '@/components/ProductCard';
+
+export function GiftsView() {
+  const { t } = useApp();
+  const giftProducts = PRODUCTS.filter((p) => p.category === 'gift');
+
+  return (
+    <section className="reveal-view mx-auto max-w-7xl px-4 py-14 sm:px-8">
+      <div className="border-b border-sage/35 pb-8">
+        <p className="text-xs uppercase tracking-[0.22em] text-olive">{t.giftsPage.eyebrow}</p>
+        <h1 className="font-editorial mt-2 text-5xl text-deep">{t.giftsPage.title}</h1>
+        <p className="mt-2 text-base text-deep/75">{t.giftsPage.subtitle}</p>
+      </div>
+
+      <div className="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {giftProducts.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
+===== FILE: src/components/views/CheckoutView.tsx =====
+'use client';
+
+import React, { useState } from 'react';
+import { useApp } from '@/context/AppContext';
+import { PRODUCTS } from '@/data/catalog';
+import { submitOrderPreview } from '@/services/commerceAdapter';
+
+export function CheckoutView() {
+  const { locale, t, cart, subtotal, navigate } = useApp();
+  const [form, setForm] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    city: '',
+    address: '',
+    notes: '',
+  });
+  const [loading, setLoading] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  if (cart.length === 0) {
+    return (
+      <section className="reveal-view mx-auto max-w-2xl px-4 py-20 text-center">
+        <h1 className="font-editorial text-4xl text-deep">{t.checkout.title}</h1>
+        <p className="mt-4 text-sm text-deep/75">{t.checkout.emptyWarning}</p>
+        <button
+          onClick={() => navigate('shop')}
+          className="mt-6 bg-olive px-7 py-3 text-xs uppercase tracking-widest text-cream hover:bg-deep"
+        >
+          {t.cart.emptyCta}
+        </button>
+      </section>
+    );
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setNotice(null);
+
+    if (!form.fullName || !form.email || !form.phone || !form.city || !form.address) {
+      setError(t.checkout.requiredError);
+      return;
+    }
+
+    setLoading(true);
+    const lines = cart.map((line) => {
+      const product = PRODUCTS.find((p) => p.id === line.productId)!;
+      const size = product.sizes.find((s) => s.id === line.sizeId)!;
+      return {
+        sku: product.sku,
+        sizeId: line.sizeId,
+        quantity: line.quantity,
+        unitPrice: size.priceEGP,
+      };
+    });
+
+    const result = await submitOrderPreview({
+      ...form,
+      lines,
+      subtotal,
+      locale,
+    });
+    setLoading(false);
+    setNotice(result.message[locale]);
+  };
+
+  return (
+    <section className="reveal-view mx-auto max-w-6xl px-4 py-14 sm:px-8">
+      <h1 className="font-editorial text-4xl text-deep">{t.checkout.title}</h1>
+      <p className="mt-2 text-sm text-deep/75">{t.checkout.subtitle}</p>
+
+      <div className="mt-10 grid gap-10 lg:grid-cols-12">
+        <form onSubmit={handleSubmit} className="space-y-4 border border-sage/35 bg-paper p-7 lg:col-span-7">
+          <h2 className="font-editorial text-2xl text-deep">{t.checkout.formTitle}</h2>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <input
+              type="text"
+              aria-label={t.checkout.name}
+              autoComplete="name"
+              required
+              placeholder={t.checkout.name}
+              value={form.fullName}
+              onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+              className="border border-sage/60 bg-cream px-3.5 py-2.5 text-sm focus:border-olive focus:outline-none"
+            />
+            <input
+              type="email"
+              aria-label={t.checkout.email}
+              autoComplete="email"
+              required
+              placeholder={t.checkout.email}
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              className="border border-sage/60 bg-cream px-3.5 py-2.5 text-sm focus:border-olive focus:outline-none"
+            />
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <input
+              type="tel"
+              aria-label={t.checkout.phone}
+              autoComplete="tel"
+              inputMode="tel"
+              required
+              placeholder={t.checkout.phone}
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              className="border border-sage/60 bg-cream px-3.5 py-2.5 text-sm focus:border-olive focus:outline-none"
+            />
+            <input
+              type="text"
+              aria-label={t.checkout.city}
+              autoComplete="address-level1"
+              required
+              placeholder={t.checkout.city}
+              value={form.city}
+              onChange={(e) => setForm({ ...form, city: e.target.value })}
+              className="border border-sage/60 bg-cream px-3.5 py-2.5 text-sm focus:border-olive focus:outline-none"
+            />
+          </div>
+
+          <input
+            type="text"
+            aria-label={t.checkout.address}
+            autoComplete="street-address"
+            required
+            placeholder={t.checkout.address}
+            value={form.address}
+            onChange={(e) => setForm({ ...form, address: e.target.value })}
+            className="w-full border border-sage/60 bg-cream px-3.5 py-2.5 text-sm focus:border-olive focus:outline-none"
+          />
+
+          <textarea
+            rows={3}
+            aria-label={t.checkout.notes}
+            placeholder={t.checkout.notes}
+            value={form.notes}
+            onChange={(e) => setForm({ ...form, notes: e.target.value })}
+            className="w-full border border-sage/60 bg-cream px-3.5 py-2.5 text-sm focus:border-olive focus:outline-none"
+          />
+
+          {error && <p className="text-xs text-red-700">{error}</p>}
+          {notice && (
+            <div className="border border-gold bg-cream p-4 text-sm text-deep">{notice}</div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-olive py-3.5 text-xs font-semibold uppercase tracking-widest text-cream transition-colors hover:bg-deep disabled:opacity-60"
+          >
+            {loading ? t.checkout.submitting : t.checkout.submitBtn}
+          </button>
+        </form>
+
+        <aside className="h-fit border border-sage/35 bg-paper p-7 lg:col-span-5">
+          <h2 className="font-editorial text-2xl text-deep">{t.checkout.summaryTitle}</h2>
+          <ul className="mt-5 space-y-3 border-b border-sage/30 pb-5 text-sm">
+            {cart.map((line) => {
+              const p = PRODUCTS.find((item) => item.id === line.productId);
+              const s = p?.sizes.find((sz) => sz.id === line.sizeId);
+              if (!p || !s) return null;
+              return (
+                <li key={`${line.productId}-${line.sizeId}`} className="flex justify-between gap-4">
+                  <span className="text-deep/85">
+                    {p.name[locale]} ({s.label[locale]}) × {line.quantity}
+                  </span>
+                  <span className="font-medium text-deep">
+                    {s.priceEGP * line.quantity} {t.currency}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+          <div className="mt-5 flex items-center justify-between">
+            <span className="text-sm text-deep/80">{t.cart.subtotal}</span>
+            <span className="font-editorial text-2xl font-medium text-deep">
+              {subtotal} {t.currency}
+            </span>
+          </div>
+          <p className="mt-2 text-xs text-deep/65">{t.cart.shippingNote}</p>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+
+===== FILE: src/app/page.tsx =====
+'use client';
+
+import React from 'react';
+import { AppProvider, useApp } from '@/context/AppContext';
+import { Navbar } from '@/components/Navbar';
+import { CartDrawer } from '@/components/CartDrawer';
+import { SearchModal } from '@/components/SearchModal';
+import { AccountModal } from '@/components/AccountModal';
+import { Footer } from '@/components/Footer';
+import { HomeView } from '@/components/views/HomeView';
+import { ShopView } from '@/components/views/ShopView';
+import { ProductDetailView } from '@/components/views/ProductDetailView';
+import { TableView } from '@/components/views/TableView';
+import { StoryView } from '@/components/views/StoryView';
+import { GuideView } from '@/components/views/GuideView';
+import { GiftsView } from '@/components/views/GiftsView';
+import { CheckoutView } from '@/components/views/CheckoutView';
+
+function StoreShell() {
+  const { route, locale } = useApp();
+
+  const renderView = () => {
+    switch (route) {
+      case 'shop':
+        return <ShopView />;
+      case 'product':
+        return <ProductDetailView />;
+      case 'table':
+        return <TableView />;
+      case 'story':
+        return <StoryView />;
+      case 'guide':
+        return <GuideView />;
+      case 'gifts':
+        return <GiftsView />;
+      case 'checkout':
+        return <CheckoutView />;
+      case 'home':
+      default:
+        return <HomeView />;
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen flex-col bg-cream text-deep">
+      <div className="bg-deep px-4 py-2 text-center text-[11px] leading-relaxed text-cream/90" role="status">
+        {locale === 'ar'
+          ? 'نسخة معاينة — الأسعار والمخزون ووسائل الدفع والتوصيل غير مفعّلة بعد.'
+          : 'Store preview — prices, inventory, payments and delivery are not live yet.'}
+      </div>
+      <Navbar />
+      <main className="flex-1">{renderView()}</main>
+      <Footer />
+      <CartDrawer />
+      <SearchModal />
+      <AccountModal />
+    </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <AppProvider>
+      <StoreShell />
+    </AppProvider>
+  );
+}
+
+
